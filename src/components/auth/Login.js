@@ -33,7 +33,7 @@ export const Login = () => {
     <main className="container--login">
       <section>
         <form className="form--login" onSubmit={handleLogin}>
-          <h1>Project Name</h1>
+          <h1 className="text-4xl font-light tracking-wider">Troupe</h1>
           <h2>Please sign in</h2>
           <fieldset>
             <label htmlFor="inputEmail"> Email address </label>
