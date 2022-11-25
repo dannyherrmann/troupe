@@ -20,7 +20,6 @@ export const TroupeSelector = () => {
         const fetchTroupes = async () => {
             const response = await fetch('http://localhost:8088/troupes')
             const troupesArray = await response.json()
-            console.log(`troupesArray`, troupesArray)
             const userTroupesArray = []
             for (const troupe of troupesArray) {
                 for (const userTroupe of userTroupes) {
