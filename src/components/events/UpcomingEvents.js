@@ -115,7 +115,7 @@ export const UpcomingEvents = ({ setterFunction, events }) => {
             </tr>
           </thead>
           <tbody>
-            {events2.map((event, eventIdx) => (
+            {events.map((event, eventIdx) => (
               <tr key={event.id}>
                 <td
                   className={classNames(
