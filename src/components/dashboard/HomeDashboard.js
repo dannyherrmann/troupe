@@ -14,6 +14,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
 import { FetchTroupeEvents } from "../ApiManager";
 import { FetchEventTypes } from "../ApiManager";
+import { FetchUserAvailability } from "../ApiManager";
 
 export const HomeDashboard = () => {
   // open new event side panel
@@ -50,7 +51,7 @@ export const HomeDashboard = () => {
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
   const navigate = useNavigate();
-
+  console.log(`events`,events)
   // classNames for tailwindUI components
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -69,17 +70,12 @@ export const HomeDashboard = () => {
     { name: "Sign out", href: "#" },
   ];
 
-  const fetchEventTypes = async () => {
-    const eventTypes = await FetchEventTypes()
-    setEventTypes(eventTypes)
-  }
-
   useEffect(() => {
     FetchTroupeEvents(setEvents)
   }, []);
 
   useEffect(() => {
-    fetchEventTypes();
+    FetchEventTypes(setEventTypes);
   }, []);
 
   // when user selects an updated even type this will update the editEventData.eventTypeId state with newly selected event type

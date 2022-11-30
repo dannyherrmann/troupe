@@ -8,13 +8,20 @@ import {
   Menu,
   Transition,
 } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
+import { FetchUserAvailability } from "../ApiManager";
 
 export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
 
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
+  const [userAvailability, setUserAvailability] = useState([])
+  console.log(`userAvailability`,userAvailability)
+
+  useEffect(() => {
+    FetchUserAvailability(setUserAvailability)
+  }, [])
 
   // classNames for tailwindUI components
   function classNames(...classes) {
