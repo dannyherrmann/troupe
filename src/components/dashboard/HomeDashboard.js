@@ -69,24 +69,24 @@ export const HomeDashboard = () => {
     { name: "Sign out", href: "#" },
   ];
 
-  useEffect(() => {
+  const FetchEventsWithUserResponse = async () => {
 
-    const FetchEventsWithUserResponse = async () => {
+    const eventArray = await FetchTroupeEvents()
 
-        const eventArray = await FetchTroupeEvents()
-
-        const userEventAvailability = []
-        for (const event of eventArray) {
-          const copy = { ...event }
-          for (const availability of event.availability) {
-            if (troupeUserObject.userTroupeId === availability.userTroupeId) {
-              copy.userResponse = availability.response
-            }
-          }
-          userEventAvailability.push(copy)
+    const userEventAvailability = []
+    for (const event of eventArray) {
+      const copy = { ...event }
+      for (const availability of event.availability) {
+        if (troupeUserObject.userTroupeId === availability.userTroupeId) {
+          copy.userResponse = availability.response
         }
-      setEvents(userEventAvailability)
+      }
+      userEventAvailability.push(copy)
     }
+  setEvents(userEventAvailability)
+}
+
+  useEffect(() => {
     FetchEventsWithUserResponse()
   }, []);
 
@@ -121,7 +121,7 @@ export const HomeDashboard = () => {
       };
       const response = await fetch(`http://localhost:8088/events`, options);
       await response.json();
-      FetchTroupeEvents(setEvents)
+      FetchEventsWithUserResponse()
       setOpenNewEvent(false);
     };
     sendData();
@@ -154,7 +154,7 @@ export const HomeDashboard = () => {
         options
       );
       await response.json();
-      FetchTroupeEvents(setEvents)
+      FetchEventsWithUserResponse()
       setOpenEditEvent(false);
     };
     saveEvent();
@@ -632,7 +632,7 @@ export const HomeDashboard = () => {
                                 `http://localhost:8088/events/${deleteEventId}`,
                                 options
                               );
-                              FetchTroupeEvents(setEvents)
+                              FetchEventsWithUserResponse()
                               setDeleteAlert(false);
                             };
                             deleteEvent();
