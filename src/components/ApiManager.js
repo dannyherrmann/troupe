@@ -1,12 +1,10 @@
-
-
 export const FetchTroupeEvents = async (state) => {
 
-  const troupeUser = localStorage.getItem("troupe_user");
+const troupeUser = localStorage.getItem("troupe_user");
 const troupeUserObject = JSON.parse(troupeUser);
 
   const response = await fetch(
-    `http://localhost:8088/events?troupeId=${troupeUserObject.troupeId}&_expand=eventType&_embed=availability`
+    `http://localhost:8088/events?troupeId=${troupeUserObject.troupeId}&_expand=eventType&_embed=availability&_sort=startDateTime`
   );
   const eventArray = await response.json();
   state(eventArray)
@@ -20,7 +18,7 @@ export const FetchEventTypes = async (state) => {
 
 export const FetchUserAvailability = async (state) => {
 
-  const troupeUser = localStorage.getItem("troupe_user");
+const troupeUser = localStorage.getItem("troupe_user");
 const troupeUserObject = JSON.parse(troupeUser);
 
   const response = await fetch(`http://localhost:8088/availability?_expand=event&userTroupeId=${troupeUserObject.userTroupeId}`)
