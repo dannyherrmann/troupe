@@ -14,7 +14,6 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
 import { FetchTroupeEvents } from "../ApiManager";
 import { FetchEventTypes } from "../ApiManager";
-import { FetchUserAvailability } from "../ApiManager";
 
 export const HomeDashboard = () => {
   // open new event side panel
@@ -51,7 +50,7 @@ export const HomeDashboard = () => {
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
   const navigate = useNavigate();
-  console.log(`events`,events)
+  console.log(`my new events`,events)
   // classNames for tailwindUI components
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -71,7 +70,24 @@ export const HomeDashboard = () => {
   ];
 
   useEffect(() => {
-    FetchTroupeEvents(setEvents)
+
+    const FetchEventsWithUserResponse = async () => {
+
+        const eventArray = await FetchTroupeEvents()
+
+        const userEventAvailability = []
+        for (const event of eventArray) {
+          const copy = { ...event }
+          for (const availability of event.availability) {
+            if (troupeUserObject.userTroupeId === availability.userTroupeId) {
+              copy.userResponse = availability.response
+            }
+          }
+          userEventAvailability.push(copy)
+        }
+      setEvents(userEventAvailability)
+    }
+    FetchEventsWithUserResponse()
   }, []);
 
   useEffect(() => {

@@ -9,19 +9,12 @@ import {
   Transition,
 } from "@headlessui/react";
 import { Fragment, useState, useEffect } from "react";
-import { FetchUserAvailability } from "../ApiManager";
 
 export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
 
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
-  const [userAvailability, setUserAvailability] = useState([])
-  console.log(`userAvailability`,userAvailability)
-
-  useEffect(() => {
-    FetchUserAvailability(setUserAvailability)
-  }, [])
 
   // classNames for tailwindUI components
   function classNames(...classes) {
@@ -204,32 +197,87 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
                                   "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
                                 )}
                               >
-                                <button
-                                  type="button"
-                                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                                >
-                                  Yes
-
-                                </button>
-
-                                <button
-                                  type="button"
-                                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                                >
-                                  No
-                                  <span className="sr-only">
-                                    , {event.eventType.name}
-                                  </span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                                >
-                                  Maybe
-                                  <span className="sr-only">
-                                    , {event.eventType.name}
-                                  </span>
-                                </button>
+                                {
+                                  event.userResponse === "Yes" ? (
+                                    <>
+                                        <button
+                                          type="button"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-green-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        >
+                                          Yes
+                                          <span className="sr-only">
+                                            , {event.eventType.name}
+                                          </span>
+                                        </button>
+                                    </>
+                                  ) : (
+                                    <>
+                                        <button
+                                          type="button"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        >
+                                          Yes
+                                          <span className="sr-only">
+                                            , {event.eventType.name}
+                                          </span>
+                                        </button>
+                                    </>
+                                  )
+                                }
+                                {
+                                  event.userResponse === "No" ? (
+                                    <>
+                                        <button
+                                          type="button"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-red-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        >
+                                          No
+                                          <span className="sr-only">
+                                            , {event.eventType.name}
+                                          </span>
+                                        </button>
+                                    </>
+                                  ) : (
+                                    <>
+                                        <button
+                                          type="button"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        >
+                                          No
+                                          <span className="sr-only">
+                                            , {event.eventType.name}
+                                          </span>
+                                        </button>
+                                    </>
+                                  )
+                                }
+                                {
+                                  event.userResponse === "Maybe" ? (
+                                    <>
+                                        <button
+                                          type="button"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-yellow-400 px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        >
+                                          Maybe
+                                          <span className="sr-only">
+                                            , {event.eventType.name}
+                                          </span>
+                                        </button>
+                                    </>
+                                  ) : (
+                                    <>
+                                        <button
+                                          type="button"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        >
+                                          Maybe
+                                          <span className="sr-only">
+                                            , {event.eventType.name}
+                                          </span>
+                                        </button>
+                                    </>
+                                  )
+                                }
                               </td>
                               <td
                                 className={classNames(
