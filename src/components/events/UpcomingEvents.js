@@ -8,9 +8,12 @@ import {
   Menu,
   Transition,
 } from "@headlessui/react";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment } from "react";
+import { DeleteAvailability } from "../ApiManager";
+import { GetUserEventAvailability } from "../ApiManager";
+import { AddAvailability } from "../ApiManager";
 
-export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailabilityEvent, setEditEventId, editEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
+export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
@@ -19,36 +22,40 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailab
 
     const buttonClicked = event.currentTarget.firstChild.data
 
-    const eventId = event.currentTarget.id;
+    const eventId = parseInt(event.currentTarget.id);
+    console.log(`yo you clicked event #`,eventId)
 
-    const getAvailability = async () => {
-      const response = await fetch(
-        `http://localhost:8088/availability?userTroupeId=${troupeUserObject.userTroupeId}&eventId=${eventId}`
-      );
-      const availability = await response.json();
-      
-    };
+    const updateAvailability = async () => {
+      const availability = await GetUserEventAvailability(troupeUserObject.userTroupeId, eventId)
 
-    const userAvailability = getAvailability()
-    const userAvailabilityArray = []
-    userAvailabilityArray.push(userAvailability)
+      if (availability.length === 0) {
+        const newAvailability = {
+          userTroupeId: troupeUserObject.userTroupeId,
+          eventId: eventId,
+          response: buttonClicked
+        }
+        console.log(`newAvailability`,newAvailability)
+        await AddAvailability(newAvailability)
+        fetchEvents()
+      } 
+      else if ((availability.length > 0) & (availability[0].response === buttonClicked)) {
+          await DeleteAvailability(availability[0].id)
+          fetchEvents()
+      } 
+      else if ((availability.length > 0) & (availability[0].response != buttonClicked)) {
+        await DeleteAvailability(availability[0].id)
+        const newAvailability = {
+          userTroupeId: troupeUserObject.userTroupeId,
+          eventId: eventId,
+          response: buttonClicked
+        }
+        await AddAvailability(newAvailability)
+        fetchEvents()
+      };
     
-
-    if (userAvailability.length > 0) {
-      const deleteAvailability = async () => {
-        const options = {
-          method: "DELETE",
-        };
-        await fetch(
-          `http://localhost:8088/availability/${userAvailability.id}`,
-          options
-        );
-      }
-      deleteAvailability()
-      fetchEvents()
-    }
-
-  };
+  }
+  updateAvailability()
+};
 
   // classNames for tailwindUI components
   function classNames(...classes) {
@@ -240,7 +247,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailab
                                       <button
                                         id={event.id}
                                         type="button"
-                                        className="inline-flex items-center rounded-md border border-gray-300 bg-green-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        className="inline-flex items-center rounded-md border border-gray-300 bg-green-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         onClick={handleAvailabilityClick}
                                       >
                                         Yes
@@ -254,7 +261,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailab
                                       <button
                                         id={event.id}
                                         type="button"
-                                        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         onClick={handleAvailabilityClick}
                                       >
                                         Yes
@@ -272,7 +279,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailab
                                           id={event.id}
                                           type="button"
                                           onClick={handleAvailabilityClick}
-                                          className="inline-flex items-center rounded-md border border-gray-300 bg-red-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-red-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >
                                           No
                                           <span className="sr-only">
@@ -286,7 +293,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailab
                                           id={event.id}
                                           onClick={handleAvailabilityClick}
                                           type="button"
-                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >
                                           No
                                           <span className="sr-only">
@@ -303,7 +310,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailab
                                           id={event.id}
                                           onClick={handleAvailabilityClick}
                                           type="button"
-                                          className="inline-flex items-center rounded-md border border-gray-300 bg-yellow-400 px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-yellow-400 px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >
                                           Maybe
                                           <span className="sr-only">
@@ -317,7 +324,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailab
                                           id={event.id}
                                           onClick={handleAvailabilityClick}
                                           type="button"
-                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >
                                           Maybe
                                           <span className="sr-only">

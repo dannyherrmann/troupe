@@ -47,7 +47,6 @@ export const HomeDashboard = () => {
     startDateTime: "",
     endDateTime: "",
   });
-  const [availabilityEvent, setAvailabilityEvent] = useState("")
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
   const navigate = useNavigate();
@@ -87,6 +86,7 @@ export const HomeDashboard = () => {
   setEvents(userEventAvailability)
 }
 
+  // this useEffect fetches initial state of user troupe ID events
   useEffect(() => {
     FetchEventsWithUserResponse()
   }, []);
@@ -95,7 +95,12 @@ export const HomeDashboard = () => {
     FetchEventTypes(setEventTypes);
   }, []);
 
-  // when user selects an updated even type this will update the editEventData.eventTypeId state with newly selected event type
+  // this useEffect allows availability button colors to update when user clicks button
+  // useEffect(() => {
+  //   FetchEventsWithUserResponse()
+  // }, [events])
+
+  // when user selects an updated event type this will update the editEventData.eventTypeId state with newly selected event type
   useEffect(() => {
     editEventData.eventTypeId = editSelectedEventType.id;
   }, [editSelectedEventType]);
@@ -345,9 +350,7 @@ export const HomeDashboard = () => {
               setEditSelectedEventType={setEditSelectedEventType}
               setDeleteEventId={setDeleteEventId}
               setDeleteAlert={setDeleteAlert}
-              fetchEvents={FetchEventsWithUserResponse}
-              editEventId={editEventId}
-              setAvailabilityEvent={setAvailabilityEvent}/>
+              fetchEvents={FetchEventsWithUserResponse}/>
 
           {/* CREATE NEW EVENT SIDE PANEL */}
           <Transition.Root show={openNewEvent} as={Fragment}>
