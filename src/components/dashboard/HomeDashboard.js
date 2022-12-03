@@ -47,6 +47,7 @@ export const HomeDashboard = () => {
     startDateTime: "",
     endDateTime: "",
   });
+  const [availabilityEvent, setAvailabilityEvent] = useState("")
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
   const navigate = useNavigate();
@@ -343,7 +344,10 @@ export const HomeDashboard = () => {
               setEditEventData={setEditEventData}
               setEditSelectedEventType={setEditSelectedEventType}
               setDeleteEventId={setDeleteEventId}
-              setDeleteAlert={setDeleteAlert}/>
+              setDeleteAlert={setDeleteAlert}
+              fetchEvents={FetchEventsWithUserResponse}
+              editEventId={editEventId}
+              setAvailabilityEvent={setAvailabilityEvent}/>
 
           {/* CREATE NEW EVENT SIDE PANEL */}
           <Transition.Root show={openNewEvent} as={Fragment}>

@@ -10,11 +10,45 @@ import {
 } from "@headlessui/react";
 import { Fragment, useState, useEffect } from "react";
 
-export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
-
+export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setAvailabilityEvent, setEditEventId, editEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
+
+  const handleAvailabilityClick = event => {
+
+    const buttonClicked = event.currentTarget.firstChild.data
+
+    const eventId = event.currentTarget.id;
+
+    const getAvailability = async () => {
+      const response = await fetch(
+        `http://localhost:8088/availability?userTroupeId=${troupeUserObject.userTroupeId}&eventId=${eventId}`
+      );
+      const availability = await response.json();
+      
+    };
+
+    const userAvailability = getAvailability()
+    const userAvailabilityArray = []
+    userAvailabilityArray.push(userAvailability)
+    
+
+    if (userAvailability.length > 0) {
+      const deleteAvailability = async () => {
+        const options = {
+          method: "DELETE",
+        };
+        await fetch(
+          `http://localhost:8088/availability/${userAvailability.id}`,
+          options
+        );
+      }
+      deleteAvailability()
+      fetchEvents()
+    }
+
+  };
 
   // classNames for tailwindUI components
   function classNames(...classes) {
@@ -37,6 +71,7 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
   // function to create the edit action option - called when creating upcoming events table
   const editButton = (eventId, active) => {
     setEditEventId(eventId);
+    console.log(`editButton eventId`,eventId)
     return (
       <a
         href="#"
@@ -68,6 +103,8 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
       </a>
     );
   };
+
+  
 
   // function to create the delete action option - called when creating upcoming events table
   const deleteButtonConfirm = (eventId, active) => {
@@ -200,27 +237,31 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
                                 {
                                   event.userResponse === "Yes" ? (
                                     <>
-                                        <button
-                                          type="button"
-                                          className="inline-flex items-center rounded-md border border-gray-300 bg-green-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                                        >
-                                          Yes
-                                          <span className="sr-only">
-                                            , {event.eventType.name}
-                                          </span>
-                                        </button>
+                                      <button
+                                        id={event.id}
+                                        type="button"
+                                        className="inline-flex items-center rounded-md border border-gray-300 bg-green-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        onClick={handleAvailabilityClick}
+                                      >
+                                        Yes
+                                        <span className="sr-only">
+                                          , {event.eventType.name}
+                                        </span>
+                                      </button>
                                     </>
                                   ) : (
                                     <>
-                                        <button
-                                          type="button"
-                                          className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                                        >
-                                          Yes
-                                          <span className="sr-only">
-                                            , {event.eventType.name}
-                                          </span>
-                                        </button>
+                                      <button
+                                        id={event.id}
+                                        type="button"
+                                        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
+                                        onClick={handleAvailabilityClick}
+                                      >
+                                        Yes
+                                        <span className="sr-only">
+                                          , {event.eventType.name}
+                                        </span>
+                                      </button>
                                     </>
                                   )
                                 }
@@ -228,7 +269,9 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
                                   event.userResponse === "No" ? (
                                     <>
                                         <button
+                                          id={event.id}
                                           type="button"
+                                          onClick={handleAvailabilityClick}
                                           className="inline-flex items-center rounded-md border border-gray-300 bg-red-500 px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >
                                           No
@@ -240,6 +283,8 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
                                   ) : (
                                     <>
                                         <button
+                                          id={event.id}
+                                          onClick={handleAvailabilityClick}
                                           type="button"
                                           className="inline-flex items-center rounded-md border border-gray-300 bg-white px-5 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >
@@ -255,6 +300,8 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
                                   event.userResponse === "Maybe" ? (
                                     <>
                                         <button
+                                          id={event.id}
+                                          onClick={handleAvailabilityClick}
                                           type="button"
                                           className="inline-flex items-center rounded-md border border-gray-300 bg-yellow-400 px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >
@@ -267,6 +314,8 @@ export const UpcomingEvents = ({setOpenNewEvent, events, setEditEventId, setOpen
                                   ) : (
                                     <>
                                         <button
+                                          id={event.id}
+                                          onClick={handleAvailabilityClick}
                                           type="button"
                                           className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 mr-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
                                         >

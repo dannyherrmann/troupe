@@ -15,3 +15,13 @@ export const FetchEventTypes = async (state) => {
   const eventTypesArray = await response.json();
   state(eventTypesArray)
 };
+
+export const deleteAvailability = async (userAvailabilityId) => {
+  const options = {
+    method: "DELETE",
+  };
+  await fetch(
+    `http://localhost:8088/availability/${userAvailabilityId}`,
+    options
+  );
+}
