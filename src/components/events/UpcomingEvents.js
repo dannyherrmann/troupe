@@ -13,7 +13,7 @@ import { DeleteAvailability } from "../ApiManager";
 import { GetUserEventAvailability } from "../ApiManager";
 import { AddAvailability } from "../ApiManager";
 
-export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
+export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
@@ -22,10 +22,10 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
 
     const buttonClicked = event.currentTarget.firstChild.data
 
-    const eventId = parseInt(event.currentTarget.id);
-    console.log(`yo you clicked event #`,eventId)
+    const eventId = parseInt(event.currentTarget.id); 
 
     const updateAvailability = async () => {
+
       const availability = await GetUserEventAvailability(troupeUserObject.userTroupeId, eventId)
 
       if (availability.length === 0) {
@@ -34,7 +34,6 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
           eventId: eventId,
           response: buttonClicked
         }
-        console.log(`newAvailability`,newAvailability)
         await AddAvailability(newAvailability)
         fetchEvents()
       } 
@@ -76,11 +75,9 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
   };
 
   // function to create the edit action option - called when creating upcoming events table
-  const editButton = (eventId, active) => {
-    setEditEventId(eventId);
-    console.log(`editButton eventId`,eventId)
+  const EditButton = (eventId, active) => {
     return (
-      <a
+      <a 
         href="#"
         className={classNames(
           active ? "bg-gray-100 text-gray-900" : "text-gray-700",
@@ -101,17 +98,15 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
           };
           fetchEvent();
         }}
-      >
-        <PencilSquareIcon
-          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-          aria-hidden="true"
-        />
-        Edit
-      </a>
-    );
-  };
-
-  
+>
+  <PencilSquareIcon
+    className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+    aria-hidden="true"
+  />
+  Edit
+</a>
+    )
+  }
 
   // function to create the delete action option - called when creating upcoming events table
   const deleteButtonConfirm = (eventId, active) => {
@@ -372,7 +367,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                           <>
                                             <Menu.Item>
                                               {({ active }) =>
-                                                editButton(event.id)
+                                                EditButton(event.id)
                                               }
                                             </Menu.Item>
                                             <Menu.Item>

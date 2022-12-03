@@ -50,7 +50,6 @@ export const HomeDashboard = () => {
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
   const navigate = useNavigate();
-  console.log(`my new events`,events)
   // classNames for tailwindUI components
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
