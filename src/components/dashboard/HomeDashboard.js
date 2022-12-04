@@ -94,11 +94,6 @@ export const HomeDashboard = () => {
     FetchEventTypes(setEventTypes);
   }, []);
 
-  // this useEffect allows availability button colors to update when user clicks button
-  // useEffect(() => {
-  //   FetchEventsWithUserResponse()
-  // }, [events])
-
   // when user selects an updated event type this will update the editEventData.eventTypeId state with newly selected event type
   useEffect(() => {
     editEventData.eventTypeId = editSelectedEventType.id;
