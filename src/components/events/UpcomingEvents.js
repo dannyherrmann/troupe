@@ -13,7 +13,7 @@ import { DeleteAvailability } from "../ApiManager";
 import { GetUserEventAvailability } from "../ApiManager";
 import { AddAvailability } from "../ApiManager";
 
-export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
+export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
@@ -79,11 +79,14 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setOpenEdi
     return (
       <a 
         href="#"
+        eventid={eventId}
         className={classNames(
           active ? "bg-gray-100 text-gray-900" : "text-gray-700",
           "group flex items-center px-4 py-2 text-sm"
         )}
-        onClick={() => {
+        onClick={(event) => {
+          setEditEventId(event.currentTarget.getAttribute('eventid'))
+          console.log(event.currentTarget.getAttribute('eventid'))
           const fetchEvent = async () => {
             const response = await fetch(
               `http://localhost:8088/events?id=${eventId}&_expand=eventType`
