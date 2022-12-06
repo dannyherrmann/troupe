@@ -45,3 +45,29 @@ export const AddAvailability = async (availability) => {
   const response = await fetch(`http://localhost:8088/availability`, options);
   await response.json();
 }
+
+export const PatchAvailability = async (userAvailabilityId, newResponse) => {
+  const options = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newResponse),
+  };
+  const response = await fetch(`http://localhost:8088/availability/${userAvailabilityId}`, options)
+  await response.json()
+}
+
+export const FetchEventResponses = async (eventId) => {
+    const response = await fetch(
+      `http://localhost:8088/events?id=${eventId}&_expand=eventType&_sort=startDateTime&_embed=availability`
+    );
+    const eventResponses = await response.json();
+    return eventResponses
+}
+
+export const FetchTroupeUsers = async (troupeId) => {
+  const response = await fetch(`http://localhost:8088/userTroupes?troupeId=${troupeId}&_expand=user`)
+  const troupeUsers = await response.json()
+  return troupeUsers
+}

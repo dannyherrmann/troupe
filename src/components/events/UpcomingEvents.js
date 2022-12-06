@@ -3,17 +3,16 @@ import {
   ChevronDownIcon,
   PencilSquareIcon,
   TrashIcon,
+  ClipboardDocumentCheckIcon
 } from "@heroicons/react/20/solid";
 import {
   Menu,
   Transition,
 } from "@headlessui/react";
 import { Fragment } from "react";
-import { DeleteAvailability } from "../ApiManager";
-import { GetUserEventAvailability } from "../ApiManager";
-import { AddAvailability } from "../ApiManager";
+import { DeleteAvailability, GetUserEventAvailability, AddAvailability, FetchEventResponses, FetchTroupeUsers, PatchAvailability } from "../ApiManager";
 
-export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert}) => {
+export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert, setViewResponses, setEventResponses}) => {
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
@@ -28,30 +27,22 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
 
       const availability = await GetUserEventAvailability(troupeUserObject.userTroupeId, eventId)
 
+      const newAvailability = {
+        userTroupeId: troupeUserObject.userTroupeId,
+        eventId: eventId,
+        response: buttonClicked
+      }
+      
       if (availability.length === 0) {
-        const newAvailability = {
-          userTroupeId: troupeUserObject.userTroupeId,
-          eventId: eventId,
-          response: buttonClicked
-        }
         await AddAvailability(newAvailability)
         fetchEvents()
-      } 
-      else if ((availability.length > 0) & (availability[0].response === buttonClicked)) {
-          await DeleteAvailability(availability[0].id)
-          fetchEvents()
-      } 
-      else if ((availability.length > 0) & (availability[0].response != buttonClicked)) {
+      } else if ((availability.length > 0) & (availability[0].response != buttonClicked)) {
+        await PatchAvailability(availability[0].id, {"response": buttonClicked})
+        fetchEvents()
+      } else if ((availability.length > 0) & (availability[0].response === buttonClicked)) {
         await DeleteAvailability(availability[0].id)
-        const newAvailability = {
-          userTroupeId: troupeUserObject.userTroupeId,
-          eventId: eventId,
-          response: buttonClicked
-        }
-        await AddAvailability(newAvailability)
         fetchEvents()
-      };
-    
+      }
   }
   updateAvailability()
 };
@@ -106,7 +97,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
     className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
     aria-hidden="true"
   />
-  Edit
+  Edit Event
 </a>
     )
   }
@@ -129,10 +120,54 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
           className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
           aria-hidden="true"
         />
-        Delete
+        Delete Event
       </a>
     );
   };
+
+  const viewResponses = (eventId, active) => {
+    return (
+          <a 
+           href="#"
+           eventid={eventId}
+           className={classNames(
+             active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+             "group flex items-center px-4 py-2 text-sm"
+           )}
+           onClick={(event) => {
+
+             const eventClicked = event.currentTarget.getAttribute('eventid')
+
+             const fetchEventResponses = async () => {
+              const eventResponseData = await FetchEventResponses(eventClicked)
+              const troupeUsers = await FetchTroupeUsers(troupeUserObject.troupeId)
+              const eventResponses = { ...eventResponseData[0] }
+              const newAvailabilityArray = []
+              for (const availability of eventResponses.availability) {
+                const newAvailability = { ...availability }
+                for (const user of troupeUsers) {
+                  if (user.id === availability.userTroupeId) {
+                    newAvailability.name = user.user.name
+                    newAvailability.photo = user.user.photo
+                  }
+                }
+                newAvailabilityArray.push(newAvailability)
+              }
+              eventResponses.availability = newAvailabilityArray
+              setEventResponses(eventResponses)
+              setViewResponses(true)
+             }
+          fetchEventResponses()
+          }}
+          >
+             <ClipboardDocumentCheckIcon
+               className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+               aria-hidden="true"
+             />
+             View Responses
+          </a>
+    )
+  }
 
   return (
     <main>
@@ -378,9 +413,20 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                                 deleteButtonConfirm(event.id)
                                               }
                                             </Menu.Item>
+                                            <Menu.Item>
+                                              {({ active }) => 
+                                                viewResponses(event.id)
+                                              }
+                                            </Menu.Item>
                                           </>
                                         ) : (
-                                          <></>
+                                          <>
+                                            <Menu.Item>
+                                              {({ active }) => 
+                                                viewResponses(event.id)   
+                                              }
+                                            </Menu.Item>
+                                          </>
                                         )}
                                       </div>
                                     </Menu.Items>
