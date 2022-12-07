@@ -72,7 +72,8 @@ export const HomeDashboard = () => {
 
   const FetchEventsWithUserResponse = async () => {
 
-    const eventArray = await FetchTroupeEvents()
+    const today = formatToday(new Date())
+    const eventArray = await FetchTroupeEvents(today)
 
     const userEventAvailability = []
     for (const event of eventArray) {
@@ -165,22 +166,8 @@ export const HomeDashboard = () => {
   const tabs = [
 
 
-    { name: 'Responses', href: '#', current: true },
-    { name: 'No Response', href: '#', current: false }
+    { name: 'Responses', href: '#', current: true }
 
-  ]
-  const team = [
-  
-  
-    {
-      name: 'Leslie Alexander',
-      handle: 'lesliealexander',
-      href: '#',
-      imageUrl:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      status: 'online',
-    },
-    // More people...
   ]
 
     // date-fns format functions
@@ -195,6 +182,10 @@ export const HomeDashboard = () => {
   
       return format(convertDateTime, "h:mm a");
     };
+
+    const formatToday = (date) => {
+      return format(date, "y-MM-dd'T'H':00'")
+    }
 
   return (
     <>
@@ -987,76 +978,32 @@ export const HomeDashboard = () => {
 
                                 </span>
                                 <div className="ml-4 truncate">
-                                  <p className="truncate text-sm font-medium text-gray-900">{availability.name}</p>
-                                  <p className="truncate text-sm text-gray-500">{
-                                    availability.response === "Yes" ? (
+                                  {
+                                    availability.userTroupeId === troupeUserObject.userTroupeId ? (
                                       <>
-                                      {availability.response}!
-                                      </>
-                                    ) : availability.response === "No" ? (
-                                      <>
-                                      {availability.response}...
+                                      <p className="truncate text-sm font-medium text-gray-900">You responded {availability.response}</p>
                                       </>
                                     ) : (
                                       <>
-                                      {availability.response}?
+                                      <p className="truncate text-sm font-medium text-gray-900">{availability.name}</p>
+                                      </>
+                                    )
+                                  }
+                                  <p className="truncate text-sm text-gray-500">{
+                                    availability.userTroupeId === troupeUserObject.userTroupeId ? (
+                                      <>
+                                      
+                                      </>
+                                    ) : (
+                                      <>
+                                      {availability.response}
                                       </>
                                     )
                                   }</p>
                                 </div>
                               </div>
                             </a>
-                            <Menu as="div" className="relative ml-2 inline-block flex-shrink-0 text-left">
-                              <Menu.Button className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                <span className="sr-only">Open options menu</span>
-                                <span className="flex h-full w-full items-center justify-center rounded-full">
-                                  <EllipsisVerticalIcon
-                                    className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </Menu.Button>
-                              <Transition
-                                as={Fragment}
-                                enter="transition ease-out duration-100"
-                                enterFrom="transform opacity-0 scale-95"
-                                enterTo="transform opacity-100 scale-100"
-                                leave="transition ease-in duration-75"
-                                leaveFrom="transform opacity-100 scale-100"
-                                leaveTo="transform opacity-0 scale-95"
-                              >
-                                <Menu.Items className="absolute top-0 right-9 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                  <div className="py-1">
-                                    <Menu.Item>
-                                      {({ active }) => (
-                                        <a
-                                          href="#"
-                                          className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
-                                          )}
-                                        >
-                                          View profile
-                                        </a>
-                                      )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                      {({ active }) => (
-                                        <a
-                                          href="#"
-                                          className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
-                                          )}
-                                        >
-                                          Send message
-                                        </a>
-                                      )}
-                                    </Menu.Item>
-                                  </div>
-                                </Menu.Items>
-                              </Transition>
-                            </Menu>
+                           
                           </div>
                         </li>
                       ))}

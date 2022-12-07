@@ -152,6 +152,15 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                   }
                 }
                 newAvailabilityArray.push(newAvailability)
+                newAvailabilityArray.sort(function (a, b) {
+                  if (b.response < a.response) {
+                    return -1;
+                  }
+                  if (b.response > a. response) {
+                    return 1
+                  }
+                  return 0
+                })
               }
               eventResponses.availability = newAvailabilityArray
               setEventResponses(eventResponses)
@@ -174,7 +183,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
               {/* Replace with your content */}
               <div className="px-4 py-8 sm:px-0">
-                <div className="h-96 rounded-lg border-4 border-dashed border-gray-200">
+                <div className="h-700 rounded-lg border-4 border-dashed border-gray-200 pb-7">
                   <div className="px-4 sm:px-6 lg:px-8">
                     <div className="sm:flex sm:items-center">
                       <div className="sm:flex-auto">
@@ -212,13 +221,13 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                             </th>
                             <th
                               scope="col"
-                              className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
                             >
                               Date / Time
                             </th>
                             <th
                               scope="col"
-                              className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
+                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
                             >
                               My Availability
                             </th>
@@ -233,7 +242,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                         </thead>
                         <tbody>
                           {events.map((event, eventIdx) => (
-                            <tr id={event.id} key={event.id}>
+                            <tr id={event.id} key={event.id} className="flex-row flex-wrap">
                               <td
                                 className={classNames(
                                   eventIdx === 0
@@ -259,7 +268,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                   eventIdx === 0
                                     ? ""
                                     : "border-t border-gray-200",
-                                  "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
+                                  "hid1 px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
                                 )}
                               >
                                 {`${formatEventDateTime(
@@ -271,7 +280,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                   eventIdx === 0
                                     ? ""
                                     : "border-t border-gray-200",
-                                  "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
+                                  "px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
                                 )}
                               >
                                 {
@@ -373,7 +382,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                   eventIdx === 0
                                     ? ""
                                     : "border-t border-gray-200",
-                                  "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
+                                  "px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
                                 )}
                               >
                                 <Menu

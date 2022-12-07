@@ -1,10 +1,10 @@
-export const FetchTroupeEvents = async () => {
+export const FetchTroupeEvents = async (today) => {
 
 const troupeUser = localStorage.getItem("troupe_user");
 const troupeUserObject = JSON.parse(troupeUser);
 
   const response = await fetch(
-    `http://localhost:8088/events?troupeId=${troupeUserObject.troupeId}&_expand=eventType&_sort=startDateTime&_embed=availability`
+    `http://localhost:8088/events?troupeId=${troupeUserObject.troupeId}&_expand=eventType&_sort=startDateTime&_embed=availability&startDateTime_gte=${today}`
   );
   const eventArray = await response.json();
   return eventArray
