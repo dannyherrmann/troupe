@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import mainLogo from'../images/chair.jpg'
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import GoogleButton from "react-google-button";
 
 export const Login = () => {
-  const [email, set] = useState("");
+  const [login, setLogin] = useState({
+    email: "",
+    password: "",
+  });
   const [troupes, setTroupes] = useState([])
   const navigate = useNavigate();
 
@@ -26,10 +35,14 @@ const findUserTroupeName = (id) => {
   }
 }
 
-  const handleTroupeLogin = async (e) => {
-    e.preventDefault()
+const updateLogin = (evt) => {
+  const copy = { ...login };
+  copy[evt.target.id] = evt.target.value;
+  setLogin(copy);
+};
 
-    const response = await fetch(`http://localhost:8088/users?_embed=userTroupes&email=${email}`)
+  const handleTroupeLogin = async (uid) => {
+    const response = await fetch(`http://localhost:8088/users?_embed=userTroupes&uid=${uid}`)
     const user = await response.json()
     console.log(user)
     if (user.length === 1) {
@@ -40,11 +53,12 @@ const findUserTroupeName = (id) => {
           "troupe_user",
           JSON.stringify({
             userId: userObject.id,
+            uid: uid,
             userTroupeId: userObject.userTroupes[0].id,
             troupeId: userObject.userTroupes[0].troupeId,
             troupeName: findUserTroupeName(userObject.userTroupes[0].troupeId),
             troupeLeader: userObject.userTroupes[0].isLeader,
-            userPhoto: userObject.photo
+            userPhoto: userObject.photo,
           })
         )
         navigate("/")
@@ -53,6 +67,7 @@ const findUserTroupeName = (id) => {
           "troupe_user",
           JSON.stringify({
             id: userObject.id,
+            uid: uid,
             userPhoto: userObject.photo,
             troupes: userObject.userTroupes,
             isLeader: userObject.isLeader
@@ -60,10 +75,27 @@ const findUserTroupeName = (id) => {
         )
         navigate("/selectTroupe")
       }
-    } else {
-      window.alert("Invalid login")
     }
-}
+  }
+
+  const emailAuth = async (e) => {
+    e.preventDefault()
+    const auth = getAuth()
+    const userCredential = await signInWithEmailAndPassword(auth, login.email, login.password)
+    const uid = userCredential.user.uid
+    handleTroupeLogin(uid)
+  }
+
+  const googleAuth = async (e) => {
+    e.preventDefault()
+    const provider = new GoogleAuthProvider()
+    const auth = getAuth()
+    const userCredential = await signInWithPopup(auth, provider)
+    const uid = userCredential.user.uid
+    handleTroupeLogin(uid)
+  }
+
+
 
   return (
     <>
@@ -80,7 +112,7 @@ const findUserTroupeName = (id) => {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form className="space-y-6" onSubmit={handleTroupeLogin}>
+            <form className="space-y-6" onSubmit={emailAuth}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   email address
@@ -90,8 +122,8 @@ const findUserTroupeName = (id) => {
                     id="email"
                     name="email"
                     type="email"
-                    value={email}
-                    onChange={(evt) => set(evt.target.value)}
+                    value={login.email}
+                    onChange={(evt) => updateLogin(evt)}
                     autoComplete="off"
                     required
                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -106,6 +138,8 @@ const findUserTroupeName = (id) => {
                 <div className="mt-1">
                   <input
                     id="password"
+                    value={login.password}
+                    onChange={(evt) => updateLogin(evt)}
                     name="password"
                     type="password"
                     autoComplete="current-password"
@@ -130,22 +164,21 @@ const findUserTroupeName = (id) => {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                  <span className="bg-white px-2 text-gray-500">Or</span>
                 </div>
               </div>
-              <div className="mt-6 grid grid-cols-1 gap-1">
+              
+            <div className="mt-6 grid grid-cols-1 gap-1">
               <div>
-                    <a
-                      href="#"
-                      className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
-                    >
-                      <span className="sr-only">Sign in with Google</span>
-                      <svg className="h-5 w-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
-                      </svg>
-                    </a>
-                  </div>
+                <div className="relative flex justify-center text-sm">
+                    <GoogleButton 
+                    type="light"
+                    onClick={googleAuth}
+                    className="ml-19"
+                    />
+                </div>
               </div>
+            </div>
               
               </div>
               
