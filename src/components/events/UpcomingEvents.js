@@ -12,7 +12,7 @@ import {
 import { Fragment } from "react";
 import { DeleteAvailability, GetUserEventAvailability, AddAvailability, FetchEventResponses, FetchTroupeUsers, PatchAvailability } from "../ApiManager";
 
-export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert, setViewResponses, setEventResponses}) => {
+export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert, setViewResponses, setEventResponses, setCastShow}) => {
 
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
@@ -174,6 +174,59 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                aria-hidden="true"
              />
              View Responses
+          </a>
+    )
+  }
+
+  const castShow = (eventId, active) => {
+    return (
+          <a 
+           href="#"
+           eventid={eventId}
+           className={classNames(
+             active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+             "group flex items-center px-4 py-2 text-sm"
+           )}
+           onClick={(event) => {
+
+             const eventClicked = event.currentTarget.getAttribute('eventid')
+
+             const fetchEventResponses = async () => {
+              const eventResponseData = await FetchEventResponses(eventClicked)
+              const troupeUsers = await FetchTroupeUsers(troupeUserObject.troupeId)
+              const eventResponses = { ...eventResponseData[0] }
+              const newAvailabilityArray = []
+              for (const availability of eventResponses.availability) {
+                const newAvailability = { ...availability }
+                for (const user of troupeUsers) {
+                  if (user.id === availability.userTroupeId) {
+                    newAvailability.name = user.user.name
+                    newAvailability.photo = user.user.photo
+                  }
+                }
+                newAvailabilityArray.push(newAvailability)
+                newAvailabilityArray.sort(function (a, b) {
+                  if (b.response < a.response) {
+                    return -1;
+                  }
+                  if (b.response > a. response) {
+                    return 1
+                  }
+                  return 0
+                })
+              }
+              eventResponses.availability = newAvailabilityArray
+              setEventResponses(eventResponses)
+              setCastShow(true)
+             }
+          fetchEventResponses()
+          }}
+          >
+             <ClipboardDocumentCheckIcon
+               className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+               aria-hidden="true"
+             />
+             Cast Show
           </a>
     )
   }
@@ -424,7 +477,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                             </Menu.Item>
                                             <Menu.Item>
                                               {({ active }) => 
-                                                viewResponses(event.id)
+                                                castShow(event.id)
                                               }
                                             </Menu.Item>
                                           </>
