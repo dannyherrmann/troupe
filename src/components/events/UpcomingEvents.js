@@ -11,6 +11,7 @@ import {
 } from "@headlessui/react";
 import { Fragment } from "react";
 import { DeleteAvailability, GetUserEventAvailability, AddAvailability, FetchEventResponses, FetchTroupeUsers, PatchAvailability } from "../ApiManager";
+import { StarIcon } from "@heroicons/react/24/outline";
 
 export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEventId, setOpenEditEvent, setEditEventData, setEditSelectedEventType, setDeleteEventId, setDeleteAlert, setViewResponses, setEventResponses, setCastShow}) => {
 
@@ -231,7 +232,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
              fetchAndShowEventResponses(eventClicked)
           }}
           >
-             <ClipboardDocumentCheckIcon
+             <StarIcon
                className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
                aria-hidden="true"
              />
