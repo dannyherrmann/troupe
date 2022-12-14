@@ -11,7 +11,7 @@ import {
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import mainLogo from "../images/chair.jpg";
-import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleIcon, CheckCircleIcon, StarIcon } from "@heroicons/react/20/solid";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
 import { FetchTroupeEvents, FetchEventTypes, AddCastMember, FetchEventResponses, FetchTroupeUsers, GetCastedUser, DeleteCastedUser } from "../ApiManager";
@@ -255,7 +255,7 @@ export const HomeDashboard = () => {
         await DeleteCastedUser(castedUser[0].id)
         fetchEventResponsesAgain(castedUser[0].eventId)
       }
-      
+
     }
     addNewCastMember()
   }
@@ -883,48 +883,71 @@ export const HomeDashboard = () => {
                         </nav>
                       </div>
                     </div>
-                    <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
-                      {eventResponses.availability?.map((availability) => (
-                        <li key={availability.id}>
-                          <div className="group relative flex items-center py-6 px-5">
-                            <a href='#' className="-m-1 block flex-1 p-1">
-                              <div className="absolute inset-0 group-hover:bg-gray-50" aria-hidden="true" />
-                              <div className="relative flex min-w-0 flex-1 items-center">
-                                <span className="relative inline-block flex-shrink-0">
-                                  <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
-
-                                </span>
-                                <div className="ml-4 truncate">
-                                  {
-                                    availability.userTroupeId === troupeUserObject.userTroupeId ? (
-                                      <>
-                                      <p className="truncate text-sm font-medium text-gray-900">You responded {availability.response}</p>
-                                      </>
-                                    ) : (
-                                      <>
-                                      <p className="truncate text-sm font-medium text-gray-900">{availability.name}</p>
-                                      </>
-                                    )
-                                  }
-                                  <p className="truncate text-sm text-gray-500">{
-                                    availability.userTroupeId === troupeUserObject.userTroupeId ? (
-                                      <>
+                    <RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
+                          <div className="m-4">
+                            {
+                              eventResponses.availability?.map((availability) => (
+                                
+                                availability.isCasted ? (
+                                  <>
+                                    <RadioGroup.Option
+                                      id={availability.userTroupeId}
+                                      key={availability.userTroupeId}
+                                      value={availability.userTroupeId}
+                                      className="border-transparent relative flex rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none">
+                                      <span className="relative flex min-w-0 flex-1 items-center">
+                                        <span className="relative inline-block flex-shrink-0">
+                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                        </span>
+                                        <div className="ml-4 truncate">
+                                        <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
+                                          {availability.name} is casted!
+                                        </RadioGroup.Label>
+                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                          Responded {availability.response}
+                                        </RadioGroup.Description>
+                                        </div>
+                                        </span>
+                                        <StarIcon
+                                        className="h-5 w-5 text-yellow-400"
+                                        />
+                                        <span
+                                        className="border-2 border-indigo-500 pointer-events-none absolute -inset-px rounded-lg"
+                                        />
+                                    </RadioGroup.Option>
+                                  </>
+                                ) : (
+                                  <>
+                                    <RadioGroup.Option
+                                      key={availability.userTroupeId}
+                                      value={availability.userTroupeId}
+                                      className="border-gray-300 relative flex rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none">
                                       
-                                      </>
-                                    ) : (
-                                      <>
-                                      {availability.response}
-                                      </>
-                                    )
-                                  }</p>
-                                </div>
-                              </div>
-                            </a>
-                           
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
+                                      <span className="relative flex min-w-0 flex-1 items-center">
+                    
+                                        
+                                        <span className="relative inline-block flex-shrink-0">
+                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                        </span>
+                                        <div className="ml-4 truncate">
+                                        <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
+                                          {availability.name}
+                                        </RadioGroup.Label>
+                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                          {availability.response}
+                                        </RadioGroup.Description>
+                                        </div>
+                                    </span>
+                                    <span
+                                      className="border-2 border-transparent pointer-events-none absolute -inset-px rounded-lg"
+                                    />
+                                    </RadioGroup.Option>
+                                  </>
+                                )
+                              ))
+                            }
+                            </div>
+                            </RadioGroup>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -989,206 +1012,81 @@ export const HomeDashboard = () => {
                         </nav>
                       </div>
                     </div>
-{/* 
-                    <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
-                      {eventResponses.availability?.map((availability) => (
-                        <li key={availability.id}>
-                          <div className="group relative flex items-center py-6 px-5">
-                            <a href='#' className="-m-1 block flex-1 p-1">
-                              <div className="absolute inset-0 group-hover:bg-gray-50" aria-hidden="true" />
-                              <div className="relative flex min-w-0 flex-1 items-center">
-                                <span className="relative inline-block flex-shrink-0">
-                                  <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
-
-                                </span>
-                                <div className="ml-4 truncate">
-                                  {
-                                    availability.userTroupeId === troupeUserObject.userTroupeId ? (
-                                      <>
-                                      <p className="truncate text-sm font-medium text-gray-900">You responded {availability.response}</p>
-                                      </>
-                                    ) : (
-                                      <>
-                                      <p className="truncate text-sm font-medium text-gray-900">{availability.name}</p>
-                                      </>
-                                    )
-                                  }
-                                  <p className="truncate text-sm text-gray-500">{
-                                    availability.userTroupeId === troupeUserObject.userTroupeId ? (
-                                      <>
+                    <RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
+                          <div className="m-4">
+                            {
+                              eventResponses.availability?.map((availability) => (
+                                
+                                availability.isCasted ? (
+                                  <>
+                                    <RadioGroup.Option
+                                      id={availability.userTroupeId}
+                                      key={availability.userTroupeId}
+                                      value={availability.userTroupeId}
+                                      className="border-transparent relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
+                                      onClick={() => {
+                                        if (troupeUserObject.troupeLeader === true) {
+                                          handleCastClick(availability)
+                                        }
+                                      }}>
+                                      <span className="relative flex min-w-0 flex-1 items-center">
+                                        <span className="relative inline-block flex-shrink-0">
+                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                        </span>
+                                        <div className="ml-4 truncate">
+                                        <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
+                                          {availability.name} is casted!
+                                        </RadioGroup.Label>
+                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                          Responded {availability.response}
+                                        </RadioGroup.Description>
+                                        </div>
+                                        </span>
+                                        <StarIcon
+                                        className="h-5 w-5 text-yellow-400"
+                                        />
+                                        <span
+                                        className="border-2 border-indigo-500 pointer-events-none absolute -inset-px rounded-lg"
+                                        />
+                                    </RadioGroup.Option>
+                                  </>
+                                ) : (
+                                  <>
+                                    <RadioGroup.Option
+                                      key={availability.userTroupeId}
+                                      value={availability.userTroupeId}
+                                      className="border-gray-300 relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
+                                      onClick={() => {
+                                        if (troupeUserObject.troupeLeader === true) {
+                                          handleCastClick(availability)
+                                        }
+                                      }}>
                                       
-                                      </>
-                                    ) : (
-                                      <>
-                                      {availability.response}
-                                      </>
-                                    )
-                                  }</p>
-                                </div>
-                                <input 
-                                id={`availability-${availability.id}`}
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                />
-                              </div>
-                            </a>
-                           
-                          </div>
-                        </li>
-                      ))}
-                    </ul> */}
-
-
+                                      <span className="relative flex min-w-0 flex-1 items-center">
                     
-                 
-                    {/* <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
-                      {
-                        eventResponses.availability?.map((availability) => (
-                          <li>
-                            <div className="group relative flex items-center py-6 px-5">
-                              <input type="checkbox" id={`availability--${availability.id}`} value="" className="hidden peer" required="" />
-                              <label for="react-option" className="inline-flex justify-between items-center p-5 w-full text-gray-500 bg-white rounded-lg border-2 border-gray-200 cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                              <div class="block">
-                              <svg className="mb-2 w-7 h-7 text-sky-500" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"></svg>
-                              <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
-                              <div class="w-full text-lg font-semibold">{availability.name}</div>
-                              <div class="w-full text-sm">{availability.response}</div>
-                              </div>
-                              </label>
+                                        
+                                        <span className="relative inline-block flex-shrink-0">
+                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                        </span>
+                                        <div className="ml-4 truncate">
+                                        <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
+                                          {availability.name}
+                                        </RadioGroup.Label>
+                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                          {availability.response}
+                                        </RadioGroup.Description>
+                                        </div>
+                                    </span>
+                                    <span
+                                      className="border-2 border-transparent pointer-events-none absolute -inset-px rounded-lg"
+                                    />
+                                    </RadioGroup.Option>
+                                  </>
+                                )
+                              ))
+                            }
                             </div>
-                          </li>
-                        ))
-                      }
-                    </ul> */}
-
-<RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
-      <div className="m-4">
-        {
-          eventResponses.availability?.map((availability) => (
-            
-            availability.isCasted ? (
-              <>
-                <RadioGroup.Option
-                  id={availability.userTroupeId}
-                  key={availability.userTroupeId}
-                  value={availability.userTroupeId}
-                  className="border-transparent relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
-                  onClick={() => {
-                    handleCastClick(availability)
-                  }}>
-                  <span className="relative flex min-w-0 flex-1 items-center">
-                    <span className="relative inline-block flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
-                    </span>
-                    <div className="ml-4 truncate">
-                    <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
-                      {availability.name}
-                    </RadioGroup.Label>
-                    <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
-                      {availability.response}
-                    </RadioGroup.Description>
-                    </div>
-                    </span>
-                    <CheckCircleIcon
-                    className="h-5 w-5 text-indigo-600"
-                    />
-                    <span
-                    className="border-2 border-indigo-500 pointer-events-none absolute -inset-px rounded-lg"
-                    />
-                </RadioGroup.Option>
-              </>
-            ) : (
-              <>
-                <RadioGroup.Option
-                  key={availability.userTroupeId}
-                  value={availability.userTroupeId}
-                  className="border-gray-300 relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
-                  onClick={() => {
-                    handleCastClick(availability)
-                  }}>
-                  
-                  <span className="relative flex min-w-0 flex-1 items-center">
-
-                    
-                    <span className="relative inline-block flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
-                    </span>
-                    <div className="ml-4 truncate">
-                    <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
-                      {availability.name}
-                    </RadioGroup.Label>
-                    <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
-                      {availability.response}
-                    </RadioGroup.Description>
-                    </div>
-                </span>
-                <span
-                  className="border-2 border-transparent pointer-events-none absolute -inset-px rounded-lg"
-                />
-                </RadioGroup.Option>
-              </>
-            )
-          ))
-        }
-        </div>
-        </RadioGroup>
-        
-
-        {/* <RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
-      <div className="m-4">
-        {eventResponses.availability?.map((availability) => (
-          <RadioGroup.Option
-            key={availability.id}
-            value={availability}
-            className={({ checked, active }) =>
-              classNames(
-                checked ? 'border-transparent' : 'border-gray-300',
-                active ? 'border-indigo-500 ring-2 ring-indigo-500' : '',
-                'relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none'
-              )
-            }
-            onClick={() => {console.log(`hi`)}}
-          >
-            {({ checked, active }) => (
-              <>
-                <span className="relative flex min-w-0 flex-1 items-center">
-
-                    
-                    <span className="relative inline-block flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
-                    </span>
-                    <div className="ml-4 truncate">
-                    <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
-                      {availability.name}
-                    </RadioGroup.Label>
-                    <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
-                      {availability.response}
-                    </RadioGroup.Description>
-                    </div>
-                </span>
-                <CheckCircleIcon
-                  className={classNames(!checked ? 'invisible' : '', 'h-5 w-5 text-indigo-600')}
-                  aria-hidden="true"
-                />
-                <span
-                  className={classNames(
-                    active ? 'border' : 'border-2',
-                    checked ? 'border-indigo-500' : 'border-transparent',
-                    'pointer-events-none absolute -inset-px rounded-lg'
-                  )}
-                  aria-hidden="true"
-                />
-              </>
-            )}
-          </RadioGroup.Option>
-        ))}
-      </div>
-    </RadioGroup> */}
-  
-
-                    
-                   
-                    
+                            </RadioGroup>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

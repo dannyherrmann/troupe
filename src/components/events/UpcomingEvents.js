@@ -151,6 +151,11 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                     newAvailability.photo = user.user.photo
                   }
                 }
+                for (const cast of eventResponses.eventCast) {
+                  if (cast.userTroupeId === availability.userTroupeId) {
+                    newAvailability.isCasted = true
+                  }
+                }
                 newAvailabilityArray.push(newAvailability)
                 newAvailabilityArray.sort(function (a, b) {
                   if (b.response < a.response) {
@@ -230,7 +235,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
                aria-hidden="true"
              />
-             Cast Show
+            Cast Show
           </a>
     )
   }
@@ -467,7 +472,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                   >
                                     <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                       <div className="py-1">
-                                        {troupeUserObject.troupeLeader ? (
+                                        {troupeUserObject.troupeLeader & event.eventType.name === "Show" ? (
                                           <>
                                             <Menu.Item>
                                               {({ active }) =>
@@ -487,6 +492,16 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                           </>
                                         ) : (
                                           <>
+                                            <Menu.Item>
+                                              {({ active }) =>
+                                                EditButton(event.id)
+                                              }
+                                            </Menu.Item>
+                                            <Menu.Item>
+                                              {({ active }) =>
+                                                deleteButtonConfirm(event.id)
+                                              }
+                                            </Menu.Item>
                                             <Menu.Item>
                                               {({ active }) => 
                                                 viewResponses(event.id)   
