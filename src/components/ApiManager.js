@@ -71,3 +71,33 @@ export const FetchTroupeUsers = async (troupeId) => {
   const troupeUsers = await response.json()
   return troupeUsers
 }
+
+export const AddCastMember = async (castMember) => {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(castMember),
+  };
+  const response = await fetch(`http://localhost:8088/eventCast`, options);
+  await response.json();
+}
+
+export const GetCastedUser = async (userTroupeId, eventId) => {
+  const response = await fetch(
+    `http://localhost:8088/eventCast?userTroupeId=${userTroupeId}&eventId=${eventId}`
+  );
+  const availability = await response.json();
+  return availability
+}
+
+export const DeleteCastedUser = async (eventCastId) => {
+  const options = {
+    method: "DELETE",
+  };
+  await fetch(
+    `http://localhost:8088/eventCast/${eventCastId}`,
+    options
+  );
+}

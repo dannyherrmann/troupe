@@ -14,7 +14,7 @@ import mainLogo from "../images/chair.jpg";
 import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
-import { FetchTroupeEvents, FetchEventTypes } from "../ApiManager";
+import { FetchTroupeEvents, FetchEventTypes, AddCastMember, FetchEventResponses, FetchTroupeUsers, GetCastedUser, DeleteCastedUser } from "../ApiManager";
 import { NavBar } from "../nav/NavBar";
 
 export const HomeDashboard = () => {
@@ -59,7 +59,8 @@ export const HomeDashboard = () => {
     { id: 2, title: 'Existing Customers', description: 'Last message sent 2 weeks ago', users: '1200 users' },
     { id: 3, title: 'Trial Users', description: 'Last message sent 4 days ago', users: '2740 users' },
   ]
-  const [selectedMailingLists, setSelectedMailingLists] = useState(mailingLists[0])
+  const [selectedMailingLists, setSelectedMailingLists] = useState("")
+  const [showCast, setShowCast] = useState([])
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
   const navigate = useNavigate();
@@ -199,6 +200,67 @@ export const HomeDashboard = () => {
     const formatToday = (date) => {
       return format(date, "y-MM-dd'T'H':00'")
     }
+
+    const fetchEventResponsesAgain = async (eventId) => {
+      const eventResponseData = await FetchEventResponses(eventId)
+      const troupeUsers = await FetchTroupeUsers(troupeUserObject.troupeId)
+      const eventResponses = { ...eventResponseData[0] }
+      const newAvailabilityArray = []
+      for (const availability of eventResponses.availability) {
+        const newAvailability = { ...availability }
+        for (const user of troupeUsers) {
+          if (user.id === availability.userTroupeId) {
+            newAvailability.name = user.user.name
+            newAvailability.photo = user.user.photo
+          }
+        }
+        for (const cast of eventResponses.eventCast) {
+          if (cast.userTroupeId === availability.userTroupeId) {
+            newAvailability.isCasted = true
+          }
+        }
+        newAvailabilityArray.push(newAvailability)
+        newAvailabilityArray.sort(function (a, b) {
+          if (b.response < a.response) {
+            return -1;
+          }
+          if (b.response > a. response) {
+            return 1
+          }
+          return 0
+        })
+      }
+      eventResponses.availability = newAvailabilityArray
+      setEventResponses(eventResponses)
+    }
+
+  const handleCastClick = (availability) => {
+
+    const userClicked = availability.userTroupeId
+    const eventId = availability.eventId
+
+    const addNewCastMember = async () => {
+
+      const castedUser = await GetCastedUser(userClicked, eventId)
+      
+      const newCastMember = {
+        eventId: availability.eventId,
+        userTroupeId: availability.userTroupeId
+      }
+
+      if (castedUser.length === 0) {
+        await AddCastMember(newCastMember)
+        fetchEventResponsesAgain(newCastMember.eventId)
+      } else if (castedUser.length > 0) {
+        await DeleteCastedUser(castedUser[0].id)
+        fetchEventResponsesAgain(castedUser[0].eventId)
+      }
+      
+    }
+    addNewCastMember()
+  }
+
+
 
   return (
     <>
@@ -1007,10 +1069,13 @@ export const HomeDashboard = () => {
             availability.isCasted ? (
               <>
                 <RadioGroup.Option
+                  id={availability.userTroupeId}
                   key={availability.userTroupeId}
                   value={availability.userTroupeId}
                   className="border-transparent relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
-                  onClick={() => {console.log(`hi`)}}>
+                  onClick={() => {
+                    handleCastClick(availability)
+                  }}>
                   <span className="relative flex min-w-0 flex-1 items-center">
                     <span className="relative inline-block flex-shrink-0">
                       <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
@@ -1038,7 +1103,9 @@ export const HomeDashboard = () => {
                   key={availability.userTroupeId}
                   value={availability.userTroupeId}
                   className="border-gray-300 relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
-                  onClick={() => {console.log(`hi`)}}>
+                  onClick={() => {
+                    handleCastClick(availability)
+                  }}>
                   
                   <span className="relative flex min-w-0 flex-1 items-center">
 

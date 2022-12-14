@@ -178,6 +178,40 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
     )
   }
 
+  const fetchAndShowEventResponses = async (eventId) => {
+    const eventResponseData = await FetchEventResponses(eventId)
+    const troupeUsers = await FetchTroupeUsers(troupeUserObject.troupeId)
+    const eventResponses = { ...eventResponseData[0] }
+    const newAvailabilityArray = []
+    for (const availability of eventResponses.availability) {
+      const newAvailability = { ...availability }
+      for (const user of troupeUsers) {
+        if (user.id === availability.userTroupeId) {
+          newAvailability.name = user.user.name
+          newAvailability.photo = user.user.photo
+        }
+      }
+      for (const cast of eventResponses.eventCast) {
+        if (cast.userTroupeId === availability.userTroupeId) {
+          newAvailability.isCasted = true
+        }
+      }
+      newAvailabilityArray.push(newAvailability)
+      newAvailabilityArray.sort(function (a, b) {
+        if (b.response < a.response) {
+          return -1;
+        }
+        if (b.response > a. response) {
+          return 1
+        }
+        return 0
+      })
+    }
+    eventResponses.availability = newAvailabilityArray
+    setEventResponses(eventResponses)
+    setCastShow(true)
+  }
+
   const castShow = (eventId, active) => {
     return (
           <a 
@@ -188,43 +222,8 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
              "group flex items-center px-4 py-2 text-sm"
            )}
            onClick={(event) => {
-
              const eventClicked = event.currentTarget.getAttribute('eventid')
-
-             const fetchEventResponses = async () => {
-              const eventResponseData = await FetchEventResponses(eventClicked)
-              const troupeUsers = await FetchTroupeUsers(troupeUserObject.troupeId)
-              const eventResponses = { ...eventResponseData[0] }
-              const newAvailabilityArray = []
-              for (const availability of eventResponses.availability) {
-                const newAvailability = { ...availability }
-                for (const user of troupeUsers) {
-                  if (user.id === availability.userTroupeId) {
-                    newAvailability.name = user.user.name
-                    newAvailability.photo = user.user.photo
-                  }
-                }
-                for (const cast of eventResponses.eventCast) {
-                  if (cast.userTroupeId === availability.userTroupeId) {
-                    newAvailability.isCasted = true
-                  }
-                }
-                newAvailabilityArray.push(newAvailability)
-                newAvailabilityArray.sort(function (a, b) {
-                  if (b.response < a.response) {
-                    return -1;
-                  }
-                  if (b.response > a. response) {
-                    return 1
-                  }
-                  return 0
-                })
-              }
-              eventResponses.availability = newAvailabilityArray
-              setEventResponses(eventResponses)
-              setCastShow(true)
-             }
-          fetchEventResponses()
+             fetchAndShowEventResponses(eventClicked)
           }}
           >
              <ClipboardDocumentCheckIcon
