@@ -60,7 +60,7 @@ export const PatchAvailability = async (userAvailabilityId, newResponse) => {
 
 export const FetchEventResponses = async (eventId) => {
     const response = await fetch(
-      `http://localhost:8088/events?id=${eventId}&_expand=eventType&_sort=startDateTime&_embed=availability`
+      `http://localhost:8088/events?id=${eventId}&_expand=eventType&_sort=startDateTime&_embed=availability&_embed=eventCast`
     );
     const eventResponses = await response.json();
     return eventResponses

@@ -204,6 +204,11 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                     newAvailability.photo = user.user.photo
                   }
                 }
+                for (const cast of eventResponses.eventCast) {
+                  if (cast.userTroupeId === availability.userTroupeId) {
+                    newAvailability.isCasted = true
+                  }
+                }
                 newAvailabilityArray.push(newAvailability)
                 newAvailabilityArray.sort(function (a, b) {
                   if (b.response < a.response) {

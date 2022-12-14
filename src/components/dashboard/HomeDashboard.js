@@ -1000,8 +1000,74 @@ export const HomeDashboard = () => {
                     </ul> */}
 
 <RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
+      <div className="m-4">
+        {
+          eventResponses.availability?.map((availability) => (
+            
+            availability.isCasted ? (
+              <>
+                <RadioGroup.Option
+                  key={availability.userTroupeId}
+                  value={availability.userTroupeId}
+                  className="border-transparent relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
+                  onClick={() => {console.log(`hi`)}}>
+                  <span className="relative flex min-w-0 flex-1 items-center">
+                    <span className="relative inline-block flex-shrink-0">
+                      <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                    </span>
+                    <div className="ml-4 truncate">
+                    <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
+                      {availability.name}
+                    </RadioGroup.Label>
+                    <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                      {availability.response}
+                    </RadioGroup.Description>
+                    </div>
+                    </span>
+                    <CheckCircleIcon
+                    className="h-5 w-5 text-indigo-600"
+                    />
+                    <span
+                    className="border-2 border-indigo-500 pointer-events-none absolute -inset-px rounded-lg"
+                    />
+                </RadioGroup.Option>
+              </>
+            ) : (
+              <>
+                <RadioGroup.Option
+                  key={availability.userTroupeId}
+                  value={availability.userTroupeId}
+                  className="border-gray-300 relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
+                  onClick={() => {console.log(`hi`)}}>
+                  
+                  <span className="relative flex min-w-0 flex-1 items-center">
 
+                    
+                    <span className="relative inline-block flex-shrink-0">
+                      <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                    </span>
+                    <div className="ml-4 truncate">
+                    <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
+                      {availability.name}
+                    </RadioGroup.Label>
+                    <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                      {availability.response}
+                    </RadioGroup.Description>
+                    </div>
+                </span>
+                <span
+                  className="border-2 border-transparent pointer-events-none absolute -inset-px rounded-lg"
+                />
+                </RadioGroup.Option>
+              </>
+            )
+          ))
+        }
+        </div>
+        </RadioGroup>
+        
 
+        {/* <RadioGroup value={selectedMailingLists} onChange={setSelectedMailingLists}>
       <div className="m-4">
         {eventResponses.availability?.map((availability) => (
           <RadioGroup.Option
@@ -1014,6 +1080,7 @@ export const HomeDashboard = () => {
                 'relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none'
               )
             }
+            onClick={() => {console.log(`hi`)}}
           >
             {({ checked, active }) => (
               <>
@@ -1049,7 +1116,7 @@ export const HomeDashboard = () => {
           </RadioGroup.Option>
         ))}
       </div>
-    </RadioGroup>
+    </RadioGroup> */}
   
 
                     
