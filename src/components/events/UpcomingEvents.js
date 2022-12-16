@@ -272,7 +272,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                         )}
                       </div>
                     </div>
-                    <div className="-mx-4 mt-10 ring-1 ring-gray-300 sm:-mx-6 md:mx-0 md:rounded-lg">
+                    <div className="-mx-4 mt-10 ring-1 ring-gray-300 sm:-mx-6 md:mx-0 md:rounded-lg bg-white">
                       <table className="min-w-full divide-y divide-gray-300">
                         <thead>
                           <tr>

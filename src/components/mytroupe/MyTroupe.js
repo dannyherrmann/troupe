@@ -7,7 +7,6 @@ export const MyTroupe = () => {
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser)
 
-  const [userTroupes, setUserTroupes] = useState([])
   const [userTypes, setUserTypes] = useState([])
   const [leaders, setLeaders] = useState([])
   const [performers, setPerformers] = useState([])
@@ -46,7 +45,8 @@ useEffect(() => {
   }, []);
 
   return (
-    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 mt-8">
+
+    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 pt-8">
     <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 mb-5">
         {troupeUserObject.troupeName}
     </h1>
@@ -92,8 +92,6 @@ useEffect(() => {
           </div>
         </li>
       ))}
-    </ul>
-    <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-3">
       {performers.map((performer) => (
         <li
           key={performer.user.email}
@@ -137,6 +135,7 @@ useEffect(() => {
       ))}
     </ul>
     </div>
+
   )
 }
 

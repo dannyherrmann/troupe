@@ -264,6 +264,7 @@ export const HomeDashboard = () => {
   return (
     <>
       {/* STACKED LAYOUT DASHBOARD */}
+      <div className="bg-gray-100">
       <div className="min-h-full">
         
       
@@ -1139,6 +1140,7 @@ export const HomeDashboard = () => {
 
 
         </div>
+      </div>
       </div>
     </>
   );
