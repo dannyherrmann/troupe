@@ -15,7 +15,6 @@ import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleI
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
 import { FetchTroupeEvents, FetchEventTypes, AddCastMember, FetchEventResponses, FetchTroupeUsers, GetCastedUser, DeleteCastedUser } from "../ApiManager";
-import { NavBar } from "../nav/NavBar";
 
 export const HomeDashboard = () => {
   // open new event side panel
@@ -268,7 +267,7 @@ export const HomeDashboard = () => {
       <div className="min-h-full">
         
       
-
+        
         <div className="py-10">
           <header>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

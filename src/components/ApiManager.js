@@ -101,3 +101,9 @@ export const DeleteCastedUser = async (eventCastId) => {
     options
   );
 }
+
+export const FetchUserTypes = async () => {
+  const response = await fetch(`http://localhost:8088/userTypes`)
+  const userTypes = await response.json()
+  return userTypes
+}
