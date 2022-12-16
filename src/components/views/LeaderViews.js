@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { HomeDashboard } from '../dashboard/HomeDashboard'
-import { CastShow } from '../events/CastShow'
+import { Calendar } from '../calendar/Calendar'
 
 export const LeaderViews = () => {
     return (
@@ -12,9 +12,8 @@ export const LeaderViews = () => {
                 <HomeDashboard />
                 </>
             }
-            >
-                <Route path="castShow" element={ <CastShow /> } />
-            </Route>
+            ></Route>
+            <Route path="calendar" element={ <Calendar /> } />
         </Routes>
     )
 }

@@ -4,6 +4,7 @@ import { ApplicationViews } from "./views/ApplicationViews";
 import { Login } from "./auth/Login";
 import { Register } from "./auth/Register";
 import { TroupeSelector } from "./auth/TroupeSelector";
+import { NavBar } from "./nav/NavBar";
 
 export const Troupe = () => {
   return (
@@ -17,6 +18,7 @@ export const Troupe = () => {
         element={
           <Authorized>
             <>
+              <NavBar />
               <ApplicationViews />
             </>
           </Authorized>

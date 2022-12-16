@@ -6,7 +6,7 @@ import {
     Menu,
     Transition
   } from "@headlessui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 export const NavBar = () => {
 
@@ -68,6 +68,7 @@ export const NavBar = () => {
                         {item.name}
                       </a>
                     ))}
+                    <NavLink to="/calendar">Calendar</NavLink>
                   </div>
                 </div>
                 <div className="hidden sm:ml-6 sm:flex sm:items-center">

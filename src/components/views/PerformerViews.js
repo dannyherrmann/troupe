@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { HomeDashboard } from '../dashboard/HomeDashboard'
+import { Calendar } from '../calendar/Calendar'
 
 export const PerformerViews = () => {
     return (
@@ -12,6 +13,7 @@ export const PerformerViews = () => {
                 </>
             }
             ></Route>
+            <Route path="calendar" element={ <Calendar /> } />
         </Routes>
     )
 }

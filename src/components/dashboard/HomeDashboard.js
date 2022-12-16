@@ -267,7 +267,7 @@ export const HomeDashboard = () => {
       {/* STACKED LAYOUT DASHBOARD */}
       <div className="min-h-full">
         
-      <NavBar />
+      
 
         <div className="py-10">
           <header>
