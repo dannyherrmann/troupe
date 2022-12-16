@@ -96,6 +96,12 @@ export const HomeDashboard = () => {
           copy.userResponse = availability.response
         }
       }
+      if (event.eventCast.length > 0) {
+        copy.casted = true
+      } else {
+        copy.casted = false
+      }
+      console.log(`COPY`,copy)
       userEventAvailability.push(copy)
     }
   setEvents(userEventAvailability)

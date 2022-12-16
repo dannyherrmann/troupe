@@ -184,6 +184,78 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
     )
   }
 
+  const viewResponsesButton = (eventId, casted, active) => {
+    return (
+          <button 
+           eventid={eventId}
+           className={classNames(
+             active ? " text-gray-900" : "text-gray-700",
+             "group flex items-center px-4 py-2 text-sm "
+           )}
+           onClick={(event) => {
+
+             const eventClicked = event.currentTarget.getAttribute('eventid')
+
+             const fetchEventResponses = async () => {
+              const eventResponseData = await FetchEventResponses(eventClicked)
+              const troupeUsers = await FetchTroupeUsers(troupeUserObject.troupeId)
+              const eventResponses = { ...eventResponseData[0] }
+              const newAvailabilityArray = []
+              for (const availability of eventResponses.availability) {
+                const newAvailability = { ...availability }
+                for (const user of troupeUsers) {
+                  if (user.id === availability.userTroupeId) {
+                    newAvailability.name = user.user.name
+                    newAvailability.photo = user.user.photo
+                  }
+                }
+                for (const cast of eventResponses.eventCast) {
+                  if (cast.userTroupeId === availability.userTroupeId) {
+                    newAvailability.isCasted = true
+                  }
+                }
+                newAvailabilityArray.push(newAvailability)
+                newAvailabilityArray.sort(function (a, b) {
+                  if (b.response < a.response) {
+                    return -1;
+                  }
+                  if (b.response > a. response) {
+                    return 1
+                  }
+                  return 0
+                })
+              }
+              eventResponses.availability = newAvailabilityArray
+              setEventResponses(eventResponses)
+              setViewResponses(true)
+             }
+          fetchEventResponses()
+          }}
+          >
+          {
+            casted ? (
+              <>
+              <StarIcon
+               className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+               aria-hidden="true"
+             />
+             View Cast
+              </>
+            ) : (
+              <>
+              <ClipboardDocumentCheckIcon
+               className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+               aria-hidden="true"
+             />
+             View Responses
+              </>
+            )
+          }
+          </button>
+          
+    )
+  }
+
   const fetchAndShowEventResponses = async (eventId) => {
     const eventResponseData = await FetchEventResponses(eventId)
     const troupeUsers = await FetchTroupeUsers(troupeUserObject.troupeId)
@@ -448,6 +520,9 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                   "px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
                                 )}
                               >
+                                {troupeUserObject.troupeLeader ? (
+
+                                
                                 <Menu
                                   as="div"
                                   className="relative inline-block text-left"
@@ -473,7 +548,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                   >
                                     <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                       <div className="py-1">
-                                        {troupeUserObject.troupeLeader & event.eventType.name === "Show" ? (
+                                        {event.eventType.name === "Show" ? (
                                           <>
                                             <Menu.Item>
                                               {({ active }) =>
@@ -513,7 +588,13 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                       </div>
                                     </Menu.Items>
                                   </Transition>
-                                </Menu>
+                                </Menu>) : (
+                                  <>
+                                  {
+                                    viewResponsesButton(event.id, event.casted)
+                                  }
+                                  </>
+                                )}
                               </td>
                             </tr>
                           ))}
