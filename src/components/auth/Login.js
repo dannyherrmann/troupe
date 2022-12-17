@@ -58,7 +58,7 @@ const updateLogin = (evt) => {
             troupeId: userObject.userTroupes[0].troupeId,
             troupeName: findUserTroupeName(userObject.userTroupes[0].troupeId),
             troupeLeader: userObject.userTroupes[0].isLeader,
-            userPhoto: userObject.photo,
+            // userPhoto: userObject.photo,
           })
         )
         navigate("/")
@@ -68,7 +68,7 @@ const updateLogin = (evt) => {
           JSON.stringify({
             id: userObject.id,
             uid: uid,
-            userPhoto: userObject.photo,
+            // userPhoto: userObject.photo,
             troupes: userObject.userTroupes,
             isLeader: userObject.isLeader
           })

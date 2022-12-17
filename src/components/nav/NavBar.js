@@ -1,8 +1,9 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import mainLogo from "../images/chair.jpg";
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { FetchLoggedInUser } from '../ApiManager';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -10,12 +11,24 @@ function classNames(...classes) {
 
 export const NavBar = ({setOpenNewEvent}) => {
 
+  
+    const troupeUser = localStorage.getItem("troupe_user");
+    const troupeUserObject = JSON.parse(troupeUser)
+
     const [selectedTab, setSelectedTab] = useState(1)
+    const [avatar, setAvatar] = useState('')
+
+    const fetchAvatar = async () => {
+      const userArray = await FetchLoggedInUser(troupeUserObject.userId)
+      setAvatar(userArray.photo)
+    }
+
+    useEffect(() => {
+      fetchAvatar()
+    }, [])
 
     const navigate = useNavigate()
 
-    const troupeUser = localStorage.getItem("troupe_user");
-    const troupeUserObject = JSON.parse(troupeUser)
 
   return (
     <Disclosure as="nav" className="bg-white shadow">
@@ -84,7 +97,7 @@ export const NavBar = ({setOpenNewEvent}) => {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src={troupeUserObject.userPhoto}
+                          src={avatar}
                           alt=""
                         />
                       </Menu.Button>

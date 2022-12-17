@@ -57,7 +57,7 @@ useEffect(() => {
           className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
         >
           <div className="flex flex-1 flex-col p-8">
-            <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full" src={leader.user.photo} alt="" />
+            <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={leader.user.photo} alt="" />
             <h3 className="mt-6 text-sm font-medium text-gray-900">{leader.user.name}</h3>
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Role</dt>
@@ -98,7 +98,7 @@ useEffect(() => {
           className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
         >
           <div className="flex flex-1 flex-col p-8">
-            <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full" src={performer.user.photo} alt="" />
+            <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={performer.user.photo} alt="" />
             <h3 className="mt-6 text-sm font-medium text-gray-900">{performer.user.name}</h3>
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Role</dt>

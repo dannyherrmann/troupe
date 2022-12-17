@@ -107,3 +107,33 @@ export const FetchUserTypes = async () => {
   const userTypes = await response.json()
   return userTypes
 }
+
+export const FetchLoggedInUser = async (userId) => {
+  const response = await fetch(`http://localhost:8088/users/${userId}`)
+  const user = await response.json()
+  return user
+}
+
+export const UpdateUserPhoto = async (userId, photoUrl) => {
+  const options = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(photoUrl),
+  };
+  const response = await fetch(`http://localhost:8088/users/${userId}`, options)
+  await response.json()
+}
+
+export const PatchUser = async (userId, updates) => {
+  const options = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updates),
+  };
+  const response = await fetch(`http://localhost:8088/users/${userId}`, options);
+  await response.json();
+}
