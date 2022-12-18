@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment } from "react"
 import { useNavigate } from "react-router-dom"
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import mainLogo from'../images/chair.jpg'
+import mainLogo from'../images/chair.png'
 
 export const TroupeSelector = () => {
 

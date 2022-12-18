@@ -1,7 +1,8 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import mainLogo from "../images/chair.jpg";
+import mainLogo from "../images/troupe_logov2.png";
+import chairIcon from "../images/chair.png";
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FetchLoggedInUser } from '../ApiManager';
 
@@ -11,7 +12,7 @@ function classNames(...classes) {
 
 export const NavBar = ({setOpenNewEvent}) => {
 
-  
+    
     const troupeUser = localStorage.getItem("troupe_user");
     const troupeUserObject = JSON.parse(troupeUser)
 
@@ -67,7 +68,7 @@ export const NavBar = ({setOpenNewEvent}) => {
                   >
                     <img
                       className="hidden h-10 w-auto lg:block"
-                      src={mainLogo}
+                      src={chairIcon}
                       alt="Troupe"
                     />
                   </Link>
@@ -80,15 +81,26 @@ export const NavBar = ({setOpenNewEvent}) => {
                 </div>
               </div>
               <div className="flex items-center">
-
+              <Link to="/"
+                  onClick={() => setSelectedTab(1)}
+                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500"
+                  >
+                    <img
+                      className="hidden h-10 w-auto lg:block"
+                      src={mainLogo}
+                      alt="Troupe"
+                    />
+                  </Link>
+              </div>
+              <div className="flex items-center">
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
-                  <button
+                  {/* <button
                     type="button"
                     className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
                     <span className="sr-only">View notifications</span>
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
+                  </button> */}
 
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
@@ -96,7 +108,7 @@ export const NavBar = ({setOpenNewEvent}) => {
                       <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <span className="sr-only">Open user menu</span>
                         <img
-                          className="h-8 w-8 rounded-full"
+                          className="h-8 w-8 rounded-full object-cover"
                           src={avatar}
                           alt=""
                         />

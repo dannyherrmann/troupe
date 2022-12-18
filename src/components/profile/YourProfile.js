@@ -2,9 +2,8 @@ import { useState, useEffect, Fragment } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import { photoStorage } from "./PhotoStorage"
 import { FetchLoggedInUser, UpdateUserPhoto, PatchUser } from "../ApiManager";
-import { getAuth, updateEmail } from "firebase/auth";
+import { getAuth, updateEmail, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { Dialog, Transition } from '@headlessui/react'
-import { CheckIcon } from '@heroicons/react/24/outline'
 
 
 export const YourProfile = () => {
@@ -23,12 +22,23 @@ export const YourProfile = () => {
   })
   const [password, setPassword] = useState('')
   const [open, setOpen] = useState(false)
+  const [currentProfile, setCurrentProfile] = useState({
+    name: '',
+    email: '',
+    bio: ''
+  })
 
   const navigate = useNavigate()
 
     const fetchUser = async () => {
         const userArray = await FetchLoggedInUser(troupeUserObject.userId)
+        const currentProfile = {
+          name: userArray.name,
+          email: userArray.email,
+          bio: userArray.bio
+        }
         setUser(userArray)
+        setCurrentProfile(currentProfile)
     }
 
     useEffect(() => {
@@ -44,38 +54,36 @@ export const YourProfile = () => {
       imagePreview.src = URL.createObjectURL(event.target.files[0])
     };
 
-      // Handles calling the upload image function
-  const handleUpload = async () => {
-    const photoObject = await photoStorage.upload("images", image)
-      // Returns image object, you will want to add these properties
-      // to an object in your database
-      // EX: a user if it's a profile picture
-      console.log(`URL`,photoObject.downloadURL)
-
-    await UpdateUserPhoto(troupeUserObject.userId,{"photo": photoObject.downloadURL})
-    const copyStorage = { ...troupeUserObject }
-    copyStorage.photo = photoObject.downloadURL
-    localStorage.setItem(
-      "troupe_user",JSON.stringify(copyStorage))
-  };
-
-  async function updateEmailForCurrentUser(email) {
-    const auth = getAuth()
-    console.log(`test`,auth.currentUser)
-    return await updateEmail(auth.currentUser, email)
-  }
-
   const handleSave = async (clickEvent) => {
     clickEvent.preventDefault()
-    
+    //check if user is changing email. if so, open up modal window for them to reauthenticate so email can be changed in firebase.
+    if (currentProfile.email != user.email) {
+      const newEmail = user.email
+      const auth = getAuth()
+      const firebaseUser = auth.currentUser
+      const credential = EmailAuthProvider.credential(currentProfile.email, password)
+      const reauth = getAuth()
+      await reauthenticateWithCredential(reauth.currentUser, credential)
+      await updateEmail(firebaseUser, newEmail)
+      await PatchUser(troupeUserObject.userId, {"email": newEmail})
+    }
+
+    //check if user is updating their photo. if so, upload photo to firebase storage. 
     if (image != null) {
       const photoObject = await photoStorage.upload("images", image)
       console.log(`URL`,photoObject.downloadURL)
       await UpdateUserPhoto(troupeUserObject.userId,{"photo": photoObject.downloadURL})
       setImageUrl(photoObject.downloadURL)
     }
-    // updateEmailForCurrentUser(user.email)
-    await PatchUser(troupeUserObject.userId, {"name": user.name, "bio": user.bio, "email": user.email})
+
+    if (currentProfile.name != user.name) {
+      await PatchUser(troupeUserObject.userId, {"name": user.name})
+    }
+
+    if (currentProfile.bio != user.bio) {
+      await PatchUser(troupeUserObject.userId, {"bio": user.bio})
+    }
+
     navigate("/")
     window.location.reload(false) 
 
@@ -167,17 +175,21 @@ export const YourProfile = () => {
                 <label className="block text-sm font-medium text-gray-700">Photo</label>
                 <div className="mt-1 flex items-center space-x-5">
                   <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
+                  
                   <img
                           id="image-preview"
-                          className="h-12 w-12 rounded-full"
+                          className="h-12 w-12 rounded-full object-cover"
                           src={user.photo}
                           alt=""
                         />
+                        
                   </span>
                   <input type="file" className="text-sm font-medium text-gray-700" onChange={(event) => handleChange(event)} />
                 </div>
               </div>
+              <div>
 
+              </div>
             </div>
           </div>
         </div>
@@ -192,11 +204,11 @@ export const YourProfile = () => {
           </button>
           </Link>
           <button
-            type="submit"
-            onClick={(clickEvent) => handleSave(clickEvent)}
+            type="button"
+            onClick={() => setOpen(true)}
             className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            Save
+            Update
           </button>
         </div>
       </form>
@@ -228,28 +240,52 @@ export const YourProfile = () => {
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                 <div>
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                    <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
-                  </div>
                   <div className="mt-3 text-center sm:mt-5">
                     <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                      Payment successful
+                      Update Profile
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
+                        Please type in your password below to save your profile
                       </p>
                     </div>
+
+                <div className="mt-3">
+                  <input
+                    id="password"
+                    value={password}
+                    onChange={(evt) => setPassword(evt.target.value)}
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                    onClick={() => setOpen(false)}
+                    onClick={(clickEvent) => handleSave(clickEvent)}
                   >
-                    Go back to dashboard
+                    Save Profile
                   </button>
+                
+                  <button
+                    onClick={() => {
+                      const copy = user
+                      copy.email = currentProfile.email
+                      setUser(copy)
+                      setPassword('')
+                      setOpen(false)
+                    }}
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-3"
+                  >
+                    Cancel
+                  </button>
+         
                 </div>
               </Dialog.Panel>
             </Transition.Child>

@@ -10,7 +10,6 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import mainLogo from "../images/chair.jpg";
 import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleIcon, CheckCircleIcon, StarIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
@@ -903,7 +902,7 @@ export const HomeDashboard = () => {
                                       className="border-transparent relative flex rounded-lg border bg-gray-100 p-4 m-4 shadow-sm focus:outline-none">
                                       <span className="relative flex min-w-0 flex-1 items-center">
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
@@ -933,7 +932,7 @@ export const HomeDashboard = () => {
                     
                                         
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
@@ -1058,7 +1057,7 @@ export const HomeDashboard = () => {
                                       }}>
                                       <span className="relative flex min-w-0 flex-1 items-center">
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
@@ -1093,7 +1092,7 @@ export const HomeDashboard = () => {
                     
                                         
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
