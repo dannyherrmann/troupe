@@ -10,12 +10,10 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import mainLogo from "../images/chair.jpg";
-import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleIcon, CheckCircleIcon, StarIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleIcon, CheckCircleIcon, StarIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
 import { FetchTroupeEvents, FetchEventTypes, AddCastMember, FetchEventResponses, FetchTroupeUsers, GetCastedUser, DeleteCastedUser } from "../ApiManager";
-import { NavBar } from "../nav/NavBar";
 
 export const HomeDashboard = () => {
   // open new event side panel
@@ -97,6 +95,12 @@ export const HomeDashboard = () => {
           copy.userResponse = availability.response
         }
       }
+      if (event.eventCast.length > 0) {
+        copy.casted = true
+      } else {
+        copy.casted = false
+      }
+      console.log(`COPY`,copy)
       userEventAvailability.push(copy)
     }
   setEvents(userEventAvailability)
@@ -265,10 +269,11 @@ export const HomeDashboard = () => {
   return (
     <>
       {/* STACKED LAYOUT DASHBOARD */}
+      <div>
       <div className="min-h-full">
         
-      <NavBar />
-
+      
+        
         <div className="py-10">
           <header>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -894,18 +899,18 @@ export const HomeDashboard = () => {
                                       id={availability.userTroupeId}
                                       key={availability.userTroupeId}
                                       value={availability.userTroupeId}
-                                      className="border-transparent relative flex rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none">
+                                      className="border-transparent relative flex rounded-lg border bg-gray-100 p-4 m-4 shadow-sm focus:outline-none">
                                       <span className="relative flex min-w-0 flex-1 items-center">
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name} is casted!
                                         </RadioGroup.Label>
-                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                        {/* <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
                                           Responded {availability.response}
-                                        </RadioGroup.Description>
+                                        </RadioGroup.Description> */}
                                         </div>
                                         </span>
                                         <StarIcon
@@ -927,20 +932,41 @@ export const HomeDashboard = () => {
                     
                                         
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name}
                                         </RadioGroup.Label>
-                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                        {/* <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
                                           {availability.response}
-                                        </RadioGroup.Description>
+                                        </RadioGroup.Description> */}
                                         </div>
                                     </span>
-                                    <span
-                                      className="border-2 border-transparent pointer-events-none absolute -inset-px rounded-lg"
-                                    />
+                                    {
+                                      availability.response === "Yes" ? (
+                                        <>
+                                        <CheckCircleIcon 
+                                        className="h-5 w-5 text-green-500"
+                                        />
+                                        <span className="border-2 border-green-500 pointer-events-none absolute -inset-px rounded-lg" />
+                                        </>
+                                      ) : availability.response === "No" ? (
+                                        <>
+                                        <XCircleIcon 
+                                        className="h-5 w-5 text-red-500"
+                                        />
+                                        <span className="border-2 border-red-500 pointer-events-none absolute -inset-px rounded-lg" />
+                                        </>
+                                      ) : (
+                                        <>
+                                        <QuestionMarkCircleIcon 
+                                        className="h-5 w-5 text-yellow-400"
+                                        />
+                                        <span className="border-2 border-yellow-400 pointer-events-none absolute -inset-px rounded-lg" />
+                                        </>
+                                      )
+                                    }
                                     </RadioGroup.Option>
                                   </>
                                 )
@@ -1023,7 +1049,7 @@ export const HomeDashboard = () => {
                                       id={availability.userTroupeId}
                                       key={availability.userTroupeId}
                                       value={availability.userTroupeId}
-                                      className="border-transparent relative flex cursor-pointer rounded-lg border bg-white p-4 m-4 shadow-sm focus:outline-none"
+                                      className="border-transparent relative flex cursor-pointer rounded-lg border bg-gray-100 p-4 m-4 shadow-sm focus:outline-none"
                                       onClick={() => {
                                         if (troupeUserObject.troupeLeader === true) {
                                           handleCastClick(availability)
@@ -1031,15 +1057,15 @@ export const HomeDashboard = () => {
                                       }}>
                                       <span className="relative flex min-w-0 flex-1 items-center">
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name} is casted!
                                         </RadioGroup.Label>
-                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                        {/* <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
                                           Responded {availability.response}
-                                        </RadioGroup.Description>
+                                        </RadioGroup.Description> */}
                                         </div>
                                         </span>
                                         <StarIcon
@@ -1066,20 +1092,41 @@ export const HomeDashboard = () => {
                     
                                         
                                         <span className="relative inline-block flex-shrink-0">
-                                          <img className="h-10 w-10 rounded-full" src={availability.photo} alt="" />
+                                          <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name}
                                         </RadioGroup.Label>
-                                        <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
+                                        {/* <RadioGroup.Description as="span" className="mt-1 flex items-center text-sm text-gray-500">
                                           {availability.response}
-                                        </RadioGroup.Description>
+                                        </RadioGroup.Description> */}
                                         </div>
                                     </span>
-                                    <span
-                                      className="border-2 border-transparent pointer-events-none absolute -inset-px rounded-lg"
-                                    />
+                                    {
+                                      availability.response === "Yes" ? (
+                                        <>
+                                        <CheckCircleIcon 
+                                        className="h-5 w-5 text-green-500"
+                                        />
+                                        <span className="border-2 border-green-500 pointer-events-none absolute -inset-px rounded-lg" />
+                                        </>
+                                      ) : availability.response === "No" ? (
+                                        <>
+                                        <XCircleIcon 
+                                        className="h-5 w-5 text-red-500"
+                                        />
+                                        <span className="border-2 border-red-500 pointer-events-none absolute -inset-px rounded-lg" />
+                                        </>
+                                      ) : (
+                                        <>
+                                        <QuestionMarkCircleIcon 
+                                        className="h-5 w-5 text-yellow-400"
+                                        />
+                                        <span className="border-2 border-yellow-400 pointer-events-none absolute -inset-px rounded-lg" />
+                                        </>
+                                      )
+                                    }
                                     </RadioGroup.Option>
                                   </>
                                 )
@@ -1098,6 +1145,7 @@ export const HomeDashboard = () => {
 
 
         </div>
+      </div>
       </div>
     </>
   );
