@@ -269,7 +269,7 @@ export const HomeDashboard = () => {
   return (
     <>
       {/* STACKED LAYOUT DASHBOARD */}
-      <div className="bg-gray-100">
+      <div>
       <div className="min-h-full">
         
       

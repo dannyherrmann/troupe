@@ -1,6 +1,7 @@
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid'
 import { useState, useEffect } from 'react'
 import { FetchTroupeUsers, FetchUserTypes } from '../ApiManager'
+import { formatPhoneNumber } from 'react-phone-number-input'
 
 export const MyTroupe = () => {
 
@@ -44,6 +45,15 @@ useEffect(() => {
     fetchUsers()
   }, []);
 
+  function formatPhoneNumber2(phoneNumberString) {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+    var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return ['(', match[2], ') ', match[3], '-', match[4]].join('');
+    }
+    return null;
+  }
+
   return (
 
     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 pt-8">
@@ -57,15 +67,34 @@ useEffect(() => {
           className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
         >
           <div className="flex flex-1 flex-col p-8">
+          <div className="mb-5">
+          <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+                  {leader.userTypeName}
+                </span>
+                </div>
             <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={leader.user.photo} alt="" />
             <h3 className="mt-6 text-sm font-medium text-gray-900">{leader.user.name}</h3>
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Role</dt>
-              <dd className="mt-3">
-                <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
-                  {leader.userTypeName}
+              <dd className="mt-2">
+              <span className="rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-black">
+                  {leader.user.email}
                 </span>
               </dd>
+              {
+                leader.user.phone ? (
+                  <>
+              <dd className="mt-2">
+              <span className="rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-black">
+                  {formatPhoneNumber2(leader.user.phone)}
+                </span>
+              </dd>
+                  </>
+                ) : (
+                  <>
+                  </>
+                )
+              }
             </dl>
           </div>
           <div>
@@ -81,7 +110,7 @@ useEffect(() => {
               </div>
               <div className="-ml-px flex w-0 flex-1">
                 <a
-                  href={`#`}
+                  href={`tel:${leader.user.phone}`}
                   className="relative inline-flex w-0 flex-1 items-center justify-center rounded-br-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500"
                 >
                   <PhoneIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -98,15 +127,34 @@ useEffect(() => {
           className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
         >
           <div className="flex flex-1 flex-col p-8">
+            <div className="mb-5">
+          <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                  {performer.userTypeName}
+                </span>
+                </div>
             <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={performer.user.photo} alt="" />
             <h3 className="mt-6 text-sm font-medium text-gray-900">{performer.user.name}</h3>
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Role</dt>
-              <dd className="mt-3">
-                <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
-                  {performer.userTypeName}
+              <dd className="mt-2">
+              <span className="rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-black">
+                  {performer.user.email}
                 </span>
               </dd>
+              {
+                performer.user.phone ? (
+                  <>
+              <dd className="mt-2">
+              <span className="rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-black">
+                  {formatPhoneNumber2(performer.user.phone)}
+                </span>
+              </dd>
+                  </>
+                ) : (
+                  <>
+                  </>
+                )
+              }
             </dl>
           </div>
           <div>
@@ -122,7 +170,7 @@ useEffect(() => {
               </div>
               <div className="-ml-px flex w-0 flex-1">
                 <a
-                  href={`#`}
+                  href={`tel:${performer.user.phone}`}
                   className="relative inline-flex w-0 flex-1 items-center justify-center rounded-br-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500"
                 >
                   <PhoneIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

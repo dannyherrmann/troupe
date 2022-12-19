@@ -318,7 +318,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
               {/* Replace with your content */}
               <div className="px-4 py-8 sm:px-0">
-                <div className="h-700 rounded-lg border-4 border-dashed border-gray-200 pb-7">
+                <div className="h-700 rounded-lg border-4 border-dashed border-gray-300 pb-7">
                   <div className="px-4 sm:px-6 lg:px-8">
                     <div className="sm:flex sm:items-center">
                       <div className="sm:flex-auto">
