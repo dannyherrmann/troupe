@@ -3,7 +3,8 @@ import {
   ChevronDownIcon,
   PencilSquareIcon,
   TrashIcon,
-  ClipboardDocumentCheckIcon
+  ClipboardDocumentCheckIcon,
+  PlusIcon
 } from "@heroicons/react/20/solid";
 import {
   Menu,
@@ -336,7 +337,8 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
                                 setOpenNewEvent(true);
                               }}
                             >
-                              New Event
+                              <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                              <span>New Event</span>
                             </button>
                           </>
                         ) : (

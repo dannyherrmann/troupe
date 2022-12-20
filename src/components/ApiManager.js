@@ -72,6 +72,12 @@ export const FetchTroupeUsers = async (troupeId) => {
   return troupeUsers
 }
 
+export const FetchUsers = async () => {
+  const response = await fetch(`http://localhost:8088/users`)
+  const users = await response.json()
+  return users
+}
+
 export const AddCastMember = async (castMember) => {
   const options = {
     method: "POST",
@@ -137,3 +143,37 @@ export const PatchUser = async (userId, updates) => {
   const response = await fetch(`http://localhost:8088/users/${userId}`, options);
   await response.json();
 }
+
+export const GetUserTroupe = async (troupeId) => {
+  const response = await fetch(
+    `http://localhost:8088/troupes/${troupeId}`
+  );
+  const troupe = await response.json();
+  return troupe
+}
+
+export const AddNewUser = async (newUser) => {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newUser),
+  };
+  const user = await fetch(`http://localhost:8088/users`, options);
+  const newUserResponse = await user.json();
+  return newUserResponse
+}
+
+export const AddUserTroupe = async (newUserTroupe) => {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newUserTroupe),
+  };
+  const userTroupe = await fetch(`http://localhost:8088/userTroupes`, options);
+  await userTroupe.json();
+}
+

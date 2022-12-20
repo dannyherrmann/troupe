@@ -17,11 +17,11 @@ export const NavBar = ({setOpenNewEvent}) => {
     const troupeUserObject = JSON.parse(troupeUser)
 
     const [selectedTab, setSelectedTab] = useState(1)
-    const [avatar, setAvatar] = useState('')
+    const [avatar, setAvatar] = useState({})
 
     const fetchAvatar = async () => {
       const userArray = await FetchLoggedInUser(troupeUserObject.userId)
-      setAvatar(userArray.photo)
+      setAvatar(userArray)
     }
 
     useEffect(() => {
@@ -67,7 +67,7 @@ export const NavBar = ({setOpenNewEvent}) => {
                   className={selectedTab === 1 ? "inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900" : "inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"}
                   >
                     <img
-                      className="hidden h-10 w-auto lg:block"
+                      className="hidden h-10 w-auto lg:block transition-transform duration-150 hover:scale-125"
                       src={chairIcon}
                       alt="Troupe"
                     />
@@ -86,7 +86,7 @@ export const NavBar = ({setOpenNewEvent}) => {
                   className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500"
                   >
                     <img
-                      className="hidden h-10 w-auto lg:block"
+                      className="hidden h-10 w-auto lg:block transition-transform duration-150 hover:scale-110"
                       src={mainLogo}
                       alt="Troupe"
                     />
@@ -107,11 +107,26 @@ export const NavBar = ({setOpenNewEvent}) => {
                     <div>
                       <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full object-cover"
-                          src={avatar}
-                          alt=""
-                        />
+                        {
+                          avatar.photo ? (
+                            <>
+                            <img
+                              className="h-8 w-8 rounded-full object-cover"
+                              src={avatar.photo}
+                              alt=""
+                            />
+                            </>
+                          ) : (
+                            <>
+                              <span className="h-7 w-7 object-cover rounded-full bg-gray-100">
+                                <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                              </span>
+                            </>
+                          )
+                        }
+
                       </Menu.Button>
                     </div>
                     <Transition

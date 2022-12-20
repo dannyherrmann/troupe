@@ -141,7 +141,7 @@ export const YourProfile = () => {
                
                 <div className="col-span-6 sm:col-span-3">
                   <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                    Email address
+                    Email Address
                   </label>
                   <input
                     type="text"
@@ -216,13 +216,27 @@ export const YourProfile = () => {
                 <label className="block text-sm font-medium text-gray-700">Photo</label>
                 <div className="mt-1 flex items-center space-x-5">
                   <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-                  
-                  <img
+                  {
+                    user.photo ? (
+                      <>
+                        <img
                           id="image-preview"
                           className="h-12 w-12 rounded-full object-cover"
                           src={user.photo}
                           alt=""
                         />
+                      </>
+                    ) : (
+                      <>
+                         <span className="h-12 w-12 object-cover rounded-full bg-gray-100">
+                           <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                           </svg>
+                         </span>
+                      </>
+                    )
+                  }
+
                         
                   </span>
                   <input type="file" className="text-sm font-medium text-gray-700" onChange={(event) => handleChange(event)} />
@@ -289,11 +303,11 @@ export const YourProfile = () => {
                 <div>
                   <div className="mt-3 text-center sm:mt-5">
                     <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                      Update Profile
+                      Password Required
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Please type in your password below to save your profile
+                        Please type in your password below to succesfully update your primary email address.
                       </p>
                     </div>
 
@@ -316,7 +330,7 @@ export const YourProfile = () => {
                     className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
                     onClick={(clickEvent) => handleSave(clickEvent)}
                   >
-                    Save Profile
+                    Update Email
                   </button>
                 
                   <button
