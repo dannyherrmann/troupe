@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckIcon, ChevronUpDownIcon, EllipsisVerticalIcon, QuestionMarkCircleIcon, CheckCircleIcon, StarIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UpcomingEvents } from "../events/UpcomingEvents";
-import { FetchTroupeEvents, FetchEventTypes, AddCastMember, FetchEventResponses, FetchTroupeUsers, GetCastedUser, DeleteCastedUser } from "../ApiManager";
+import { FetchTroupeEvents, FetchEventTypes, AddCastMember, FetchEventResponses, FetchTroupeUsers, GetCastedUser, DeleteCastedUser, GetUserTroupe } from "../ApiManager";
 
 export const HomeDashboard = () => {
   // open new event side panel
@@ -59,6 +59,7 @@ export const HomeDashboard = () => {
   ]
   const [selectedMailingLists, setSelectedMailingLists] = useState("")
   const [showCast, setShowCast] = useState([])
+  const [troupe, setTroupe] = useState({})
   const troupeUser = localStorage.getItem("troupe_user");
   const troupeUserObject = JSON.parse(troupeUser);
   const navigate = useNavigate();
@@ -81,6 +82,14 @@ export const HomeDashboard = () => {
   ];
   
 
+  const fetchTroupe = async () => {
+    const troupe = await GetUserTroupe(troupeUserObject.troupeId)
+    setTroupe(troupe)
+  }
+
+  useEffect(() => {
+    fetchTroupe()
+  }, [])
 
   const FetchEventsWithUserResponse = async () => {
 
@@ -277,9 +286,18 @@ export const HomeDashboard = () => {
         <div className="py-10">
           <header>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <span className="relative flex min-w-0 flex-1 items-center">
+            <img
+                          className="h-10 w-10 rounded-full object-cover mr-2"
+                          src={troupe.logo}
+                          alt=""
+                        />
               <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
                 {troupeUserObject.troupeName}
               </h1>
+
+            </span>
+
             </div>
           </header>
           
@@ -901,9 +919,24 @@ export const HomeDashboard = () => {
                                       value={availability.userTroupeId}
                                       className="border-transparent relative flex rounded-lg border bg-gray-100 p-4 m-4 shadow-sm focus:outline-none">
                                       <span className="relative flex min-w-0 flex-1 items-center">
-                                        <span className="relative inline-block flex-shrink-0">
+                                        {
+                                          availability.photo ? (
+                                            <>
+                                                                                    <span className="relative inline-block flex-shrink-0">
                                           <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <span className="mx-auto h-32 w-32 overflow-hidden rounded-full bg-gray-100">
+                                                <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                                </svg>
+                                              </span>
+                                            </>
+                                          )
+                                        }
+
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name} is casted!
@@ -931,9 +964,23 @@ export const HomeDashboard = () => {
                                       <span className="relative flex min-w-0 flex-1 items-center">
                     
                                         
+                                      {
+                                          availability.photo ? (
+                                            <>
                                         <span className="relative inline-block flex-shrink-0">
                                           <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <span className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+                                                <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                                </svg>
+                                              </span>
+                                            </>
+                                          )
+                                        }
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name}
@@ -1056,9 +1103,23 @@ export const HomeDashboard = () => {
                                         }
                                       }}>
                                       <span className="relative flex min-w-0 flex-1 items-center">
+                                      {
+                                          availability.photo ? (
+                                            <>
                                         <span className="relative inline-block flex-shrink-0">
                                           <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <span className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+                                                <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                                </svg>
+                                              </span>
+                                            </>
+                                          )
+                                        }
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name} is casted!
@@ -1091,9 +1152,23 @@ export const HomeDashboard = () => {
                                       <span className="relative flex min-w-0 flex-1 items-center">
                     
                                         
+                                      {
+                                          availability.photo ? (
+                                            <>
                                         <span className="relative inline-block flex-shrink-0">
                                           <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <span className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+                                                <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                                </svg>
+                                              </span>
+                                            </>
+                                          )
+                                        }
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name}

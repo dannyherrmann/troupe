@@ -3,6 +3,7 @@ import { HomeDashboard } from '../dashboard/HomeDashboard'
 import { Calendar } from '../calendar/Calendar'
 import { MyTroupe } from '../mytroupe/MyTroupe'
 import { YourProfile } from '../profile/YourProfile'
+import { AddUser } from '../profile/AddUser'
 
 export const LeaderViews = () => {
     return (
@@ -18,6 +19,7 @@ export const LeaderViews = () => {
             <Route path="calendar" element={ <Calendar /> } />
             <Route path="mytroupe" element={ <MyTroupe /> } />
             <Route path="profile" element={ <YourProfile /> } />
+            <Route path="myTroupe/addUser" element={ <AddUser /> } />
         </Routes>
     )
 }

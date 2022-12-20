@@ -1,7 +1,7 @@
-import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid'
+import { EnvelopeIcon, PhoneIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { useState, useEffect } from 'react'
-import { FetchTroupeUsers, FetchUserTypes } from '../ApiManager'
-import { formatPhoneNumber } from 'react-phone-number-input'
+import { Link } from 'react-router-dom';
+import { FetchTroupeUsers, FetchUserTypes, GetUserTroupe } from '../ApiManager'
 
 export const MyTroupe = () => {
 
@@ -11,6 +11,7 @@ export const MyTroupe = () => {
   const [userTypes, setUserTypes] = useState([])
   const [leaders, setLeaders] = useState([])
   const [performers, setPerformers] = useState([])
+  const [troupe, setTroupe] = useState({})
 
   const findUserTypeName = (id, state) => {
     for (const type of state) {
@@ -19,6 +20,15 @@ export const MyTroupe = () => {
         }
     }
   }
+
+  const fetchTroupe = async () => {
+    const troupe = await GetUserTroupe(troupeUserObject.troupeId)
+    setTroupe(troupe)
+  }
+
+  useEffect(() => {
+    fetchTroupe()
+  }, [])
 
   const fetchUsers = async () => {
     const userTypes = await FetchUserTypes()
@@ -56,10 +66,44 @@ useEffect(() => {
 
   return (
 
-    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 pt-8">
-    <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 mb-5">
-        {troupeUserObject.troupeName}
-    </h1>
+    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 py-10">
+
+    <div className="sm:flex sm:items-center">
+    <header>
+            <div className="sm:flex-auto">
+             <span className="relative flex min-w-0 flex-1 items-center">
+            <img
+                          className="h-10 w-10 rounded-full object-cover mr-2"
+                          src={troupe.logo}
+                          alt=""
+            />
+              <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
+                {troupe.name}
+              </h1>
+            </span>
+            </div>
+            
+            <div className="mt-4 sm:flex-auto">
+                        {troupeUserObject.troupeLeader ? (
+                          <>
+                          <Link to="addUser">
+                            <button
+                              type="button"
+                              className="mt-5 inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+
+                            >
+                              <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                              <span>New User</span>
+                            </button>
+                            </Link>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+              </div>
+      </header> 
+      </div>
+         <div className="px-4 py-8 sm:px-0">
     <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {leaders.map((leader) => (
         <li
@@ -72,7 +116,22 @@ useEffect(() => {
                   {leader.userTypeName}
                 </span>
                 </div>
-            <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={leader.user.photo} alt="" />
+            {
+              leader.user.photo ? (
+                <>
+                <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={leader.user.photo} alt="" />
+                </>
+              ) : (
+                <> 
+                <span className="mx-auto h-32 w-32 overflow-hidden rounded-full bg-gray-100">
+                  <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </span>
+                </>
+              )
+            }
+            
             <h3 className="mt-6 text-sm font-medium text-gray-900">{leader.user.name}</h3>
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Role</dt>
@@ -132,7 +191,22 @@ useEffect(() => {
                   {performer.userTypeName}
                 </span>
                 </div>
-            <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={performer.user.photo} alt="" />
+                {
+              performer.user.photo ? (
+                <>
+                <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full object-cover" src={performer.user.photo} alt="" />
+                </>
+              ) : (
+                <> 
+                <span className="mx-auto h-32 w-32 overflow-hidden rounded-full bg-gray-100">
+                  <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </span>
+                </>
+              )
+            }
+            
             <h3 className="mt-6 text-sm font-medium text-gray-900">{performer.user.name}</h3>
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Role</dt>
@@ -182,6 +256,7 @@ useEffect(() => {
         </li>
       ))}
     </ul>
+    </div>
     </div>
 
   )
