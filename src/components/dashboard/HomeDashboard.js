@@ -919,16 +919,16 @@ export const HomeDashboard = () => {
                                       value={availability.userTroupeId}
                                       className="border-transparent relative flex rounded-lg border bg-gray-100 p-4 m-4 shadow-sm focus:outline-none">
                                       <span className="relative flex min-w-0 flex-1 items-center">
-                                        {
+                                      {
                                           availability.photo ? (
                                             <>
-                                                                                    <span className="relative inline-block flex-shrink-0">
+                                        <span className="relative inline-block flex-shrink-0">
                                           <img className="h-10 w-10 rounded-full object-cover" src={availability.photo} alt="" />
                                         </span>
                                             </>
                                           ) : (
                                             <>
-                                              <span className="mx-auto h-32 w-32 overflow-hidden rounded-full bg-gray-100">
+                                              <span className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-100">
                                                 <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                                                   <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                                                 </svg>
@@ -936,7 +936,6 @@ export const HomeDashboard = () => {
                                             </>
                                           )
                                         }
-
                                         <div className="ml-4 truncate">
                                         <RadioGroup.Label as="span" className="block text-sm font-medium text-gray-900">
                                           {availability.name} is casted!

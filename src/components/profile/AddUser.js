@@ -92,12 +92,31 @@ export const AddUser = () => {
 
     let uid = ''
 
-    const existingUser = allUsers.find(allUser => allUser.email === user.email)
     
-    console.log(`existingUserLength`,existingUser.id)
+
+    const userCheck = (email) => {
+      const existingUser = allUsers.find(allUser => allUser.email === email)
+      console.log(existingUser)
+
+      if (existingUser != undefined) {
+        return true
+      } 
+      
+      if (existingUser === undefined) {
+        return false
+      }
+
+    }
+   
+
+    const getExistingUserId = (email) => {
+      const existingUser = allUsers.find(allUser => allUser.email === email)
+      return existingUser.id
+    }
 
     const addUserFirebase = async () => {
-      if (!existingUser.id) {
+      console.log(`userCheck=`,userCheck(user.email))
+      if (userCheck(user.email) === false) {
         const auth = getAuth()
         const userCredential = await createUserWithEmailAndPassword(auth, user.email, user.password)
         uid = userCredential.user.uid
@@ -109,7 +128,7 @@ export const AddUser = () => {
 
 
     const addUserMockDB = async () => {
-      if (!existingUser.email) {
+      if (userCheck(user.email) === false) {
         const newUser = {
           uid: uid,
           name: user.name,
@@ -128,7 +147,7 @@ export const AddUser = () => {
     await AddUserTroupe(newUserTroupe)
       } else {
         const newUserTroupe = {
-          userId: existingUser.id,
+          userId: getExistingUserId(user.email),
           troupeId: troupeUserObject.troupeId,
           isLeader: leaderCheck(selectedUserType.id),
           userTypeId: selectedUserType.id
@@ -154,7 +173,7 @@ export const AddUser = () => {
             <div className="md:col-span-1">
               <h3 className="text-lg font-medium leading-6 text-gray-900">New User</h3>
               <p className="mt-1 text-sm text-gray-500">
-                This information will be displayed publicly so be careful what you share.
+                Add a new user to the {troupeUserObject.troupeName} troupe!
               </p>
             </div>
             <div className="mt-5 space-y-6 md:col-span-2 md:mt-0">
@@ -271,7 +290,7 @@ export const AddUser = () => {
         </div>
   
         <div className="flex justify-end">
-          <Link to="/">
+          <Link to="/myTroupe">
           <button
             type="button"
             className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
