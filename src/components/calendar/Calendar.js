@@ -2,54 +2,14 @@ import { Fragment, useState } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
-import { eachDayOfInterval, endOfMonth, format, startOfMonth, startOfToday, endOfWeek, isToday, isSameMonth, isEqual, parse, add, startOfWeek } from "date-fns";
+import { eachDayOfInterval, endOfMonth, format, startOfMonth, startOfToday, endOfWeek, isToday, isSameMonth, isEqual, parse, add, startOfWeek, isSameDay, parseISO } from "date-fns";
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
 
 export const Calendar = () => {
 
-const days = [
-  { date: '2021-12-27' },
-  { date: '2021-12-28' },
-  { date: '2021-12-29' },
-  { date: '2021-12-30' },
-  { date: '2021-12-31' },
-  { date: '2022-01-01', isCurrentMonth: true },
-  { date: '2022-01-02', isCurrentMonth: true },
-  { date: '2022-01-03', isCurrentMonth: true },
-  { date: '2022-01-04', isCurrentMonth: true },
-  { date: '2022-01-05', isCurrentMonth: true },
-  { date: '2022-01-06', isCurrentMonth: true },
-  { date: '2022-01-07', isCurrentMonth: true },
-  { date: '2022-01-08', isCurrentMonth: true },
-  { date: '2022-01-09', isCurrentMonth: true },
-  { date: '2022-01-10', isCurrentMonth: true },
-  { date: '2022-01-11', isCurrentMonth: true },
-  { date: '2022-01-12', isCurrentMonth: true, isToday: true },
-  { date: '2022-01-13', isCurrentMonth: true },
-  { date: '2022-01-14', isCurrentMonth: true },
-  { date: '2022-01-15', isCurrentMonth: true },
-  { date: '2022-01-16', isCurrentMonth: true },
-  { date: '2022-01-17', isCurrentMonth: true },
-  { date: '2022-01-18', isCurrentMonth: true },
-  { date: '2022-01-19', isCurrentMonth: true },
-  { date: '2022-01-20', isCurrentMonth: true },
-  { date: '2022-01-21', isCurrentMonth: true, isSelected: true },
-  { date: '2022-01-22', isCurrentMonth: true },
-  { date: '2022-01-23', isCurrentMonth: true },
-  { date: '2022-01-24', isCurrentMonth: true },
-  { date: '2022-01-25', isCurrentMonth: true },
-  { date: '2022-01-26', isCurrentMonth: true },
-  { date: '2022-01-27', isCurrentMonth: true },
-  { date: '2022-01-28', isCurrentMonth: true },
-  { date: '2022-01-29', isCurrentMonth: true },
-  { date: '2022-01-30', isCurrentMonth: true },
-  { date: '2022-01-31', isCurrentMonth: true },
-  { date: '2022-02-01' },
-  { date: '2022-02-02' },
-  { date: '2022-02-03' },
-  { date: '2022-02-04' },
-  { date: '2022-02-05' },
-  { date: '2022-02-06' },
-]
 const meetings = [
   {
     id: 1,
@@ -57,16 +17,13 @@ const meetings = [
     imageUrl:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     start: '1:00 PM',
-    startDatetime: '2022-01-21T13:00',
+    startDatetime: '2022-12-29T13:00',
     end: '2:30 PM',
-    endDatetime: '2022-01-21T14:30',
+    endDatetime: '2022-12-29T14:30',
   },
   // More meetings...
 ]
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 const today = startOfToday()
 
@@ -74,7 +31,7 @@ const [selectedDay, setSelectedDay] = useState(today)
 const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
 const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
-const newDays = eachDayOfInterval({
+const days = eachDayOfInterval({
   start: startOfWeek(firstDayCurrentMonth),
   end: endOfWeek(endOfMonth(firstDayCurrentMonth)),
 })
@@ -89,7 +46,12 @@ const nextMonth = () => {
   setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
 }
 
+let selectedDayMeetings = meetings.filter((meeting) => 
+  isSameDay(parseISO(meeting.startDatetime), selectedDay)
+)
+
   return (
+    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 py-10">
     <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
       <div className="md:pr-14">
         <div className="flex items-center">
@@ -124,8 +86,8 @@ const nextMonth = () => {
           <div>S</div>
         </div>
         <div className="mt-2 grid grid-cols-7 text-sm">
-          {newDays.map((day, dayIdx) => (
-            <div key={day.toString()} className={classNames(dayIdx > 6 && 'border-t border-gray-200', 'py-2')}>
+          {days.map((day, dayIdx) => (
+            <div key={day.toString()} className={classNames(dayIdx > 6 && 'border-t border-gray-200', 'py-1.5')}>
               <button
                 type="button"
                 onClick={() => setSelectedDay(day)}
@@ -145,82 +107,101 @@ const nextMonth = () => {
                   {format(day, 'd')}
                 </time>
               </button>
+              <div className="w-1 h-1 mx-auto mt-1">
+                  {meetings.some((meeting) => 
+                    isSameDay(parseISO(meeting.startDatetime), day)
+                  ) && (
+                    <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                  )}
+              </div>
             </div>
           ))}
         </div>
       </div>
       <section className="mt-12 md:mt-0 md:pl-14">
         <h2 className="font-semibold text-gray-900">
-          Schedule for <time dateTime="2022-01-21">January 21, 2022</time>
+          Schedule for <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>{format(selectedDay, 'MMM dd, yyy')}</time>
         </h2>
         <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-          {meetings.map((meeting) => (
-            <li
-              key={meeting.id}
-              className="group flex items-center space-x-4 rounded-xl py-2 px-4 focus-within:bg-gray-100 hover:bg-gray-100"
-            >
-              <img src={meeting.imageUrl} alt="" className="h-10 w-10 flex-none rounded-full" />
-              <div className="flex-auto">
-                <p className="text-gray-900">{meeting.name}</p>
-                <p className="mt-0.5">
-                  <time dateTime={meeting.startDatetime}>{meeting.start}</time> -{' '}
-                  <time dateTime={meeting.endDatetime}>{meeting.end}</time>
-                </p>
-              </div>
-              <Menu as="div" className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100">
-                <div>
-                  <Menu.Button className="-m-2 flex items-center rounded-full p-1.5 text-gray-500 hover:text-gray-600">
-                    <span className="sr-only">Open options</span>
-                    <EllipsisVerticalIcon className="h-6 w-6" aria-hidden="true" />
-                  </Menu.Button>
-                </div>
-
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                              'block px-4 py-2 text-sm'
-                            )}
-                          >
-                            Edit
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                              'block px-4 py-2 text-sm'
-                            )}
-                          >
-                            Cancel
-                          </a>
-                        )}
-                      </Menu.Item>
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
-            </li>
-          ))}
+          {selectedDayMeetings.length > 0 ? (
+            selectedDayMeetings.map((meeting) => (
+                <Meeting meeting={meeting} key={meeting.id}/>
+            ))
+          ) : (
+            <p>No meetings for today</p>
+          )}
         </ol>
       </section>
     </div>
+    </div>
+  )
+}
+
+function Meeting({ meeting }) {
+
+  return (
+    <li
+    key={meeting.id}
+    className="group flex items-center space-x-4 rounded-xl py-2 px-4 focus-within:bg-gray-100 hover:bg-gray-100"
+  >
+    <img src={meeting.imageUrl} alt="" className="h-10 w-10 flex-none rounded-full" />
+    <div className="flex-auto">
+      <p className="text-gray-900">{meeting.name}</p>
+      {/* <p className="mt-0.5">
+        <time dateTime={meeting.startDatetime}>{meeting.start}</time> -{' '}
+        <time dateTime={meeting.endDatetime}>{meeting.end}</time>
+      </p> */}
+    </div>
+    <Menu as="div" className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100">
+      <div>
+        <Menu.Button className="-m-2 flex items-center rounded-full p-1.5 text-gray-500 hover:text-gray-600">
+          <span className="sr-only">Open options</span>
+          <EllipsisVerticalIcon className="h-6 w-6" aria-hidden="true" />
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="py-1">
+            <Menu.Item>
+              {({ active }) => (
+                <a
+                  href="#"
+                  className={classNames(
+                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                    'block px-4 py-2 text-sm'
+                  )}
+                >
+                  Edit
+                </a>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <a
+                  href="#"
+                  className={classNames(
+                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                    'block px-4 py-2 text-sm'
+                  )}
+                >
+                  Cancel
+                </a>
+              )}
+            </Menu.Item>
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  </li>
   )
 }
 
