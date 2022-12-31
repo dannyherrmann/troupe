@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import { HomeDashboard } from '../dashboard/HomeDashboard'
 import { Calendar } from '../calendar/Calendar'
+import { CalendarNew } from '../calendar/CalendarNew'
 import { MyTroupe } from '../mytroupe/MyTroupe'
 import { YourProfile } from '../profile/YourProfile'
 import { AddUser } from '../profile/AddUser'
@@ -16,7 +17,7 @@ export const LeaderViews = () => {
                 </>
             }
             ></Route>
-            <Route path="calendar" element={ <Calendar /> } />
+            <Route path="calendar" element={ <CalendarNew /> } />
             <Route path="mytroupe" element={ <MyTroupe /> } />
             <Route path="profile" element={ <YourProfile /> } />
             <Route path="myTroupe/addUser" element={ <AddUser /> } />
