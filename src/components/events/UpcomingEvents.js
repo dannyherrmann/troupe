@@ -82,7 +82,7 @@ export const UpcomingEvents = ({fetchEvents, setOpenNewEvent, events, setEditEve
           console.log(event.currentTarget.getAttribute('eventid'))
           const fetchEvent = async () => {
             const response = await fetch(
-              `http://localhost:8088/events?id=${eventId}&_expand=eventType`
+              `http://troupe-db.glitch.me/events?id=${eventId}&_expand=eventType`
             );
             const event = await response.json();
             setEditEventData(event[0]);

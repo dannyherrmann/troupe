@@ -4,21 +4,21 @@ const troupeUser = localStorage.getItem("troupe_user");
 const troupeUserObject = JSON.parse(troupeUser);
 
   const response = await fetch(
-    `http://localhost:8088/events?troupeId=${troupeUserObject.troupeId}&_expand=eventType&_sort=startDateTime&_embed=availability&startDateTime_gte=${today}&_embed=eventCast`
+    `http://troupe-db.glitch.me/events?troupeId=${troupeUserObject.troupeId}&_expand=eventType&_sort=startDateTime&_embed=availability&startDateTime_gte=${today}&_embed=eventCast`
   );
   const eventArray = await response.json();
   return eventArray
 };
 
 export const FetchEventTypes = async (state) => {
-  const response = await fetch(`http://localhost:8088/eventTypes`);
+  const response = await fetch(`http://troupe-db.glitch.me/eventTypes`);
   const eventTypesArray = await response.json();
   state(eventTypesArray)
 };
 
 export const GetUserEventAvailability = async (userTroupeId, eventId) => {
   const response = await fetch(
-    `http://localhost:8088/availability?userTroupeId=${userTroupeId}&eventId=${eventId}`
+    `http://troupe-db.glitch.me/availability?userTroupeId=${userTroupeId}&eventId=${eventId}`
   );
   const availability = await response.json();
   return availability
@@ -29,7 +29,7 @@ export const DeleteAvailability = async (userAvailabilityId) => {
     method: "DELETE",
   };
   await fetch(
-    `http://localhost:8088/availability/${userAvailabilityId}`,
+    `http://troupe-db.glitch.me/availability/${userAvailabilityId}`,
     options
   );
 }
@@ -42,7 +42,7 @@ export const AddAvailability = async (availability) => {
     },
     body: JSON.stringify(availability),
   };
-  const response = await fetch(`http://localhost:8088/availability`, options);
+  const response = await fetch(`http://troupe-db.glitch.me/availability`, options);
   await response.json();
 }
 
@@ -54,26 +54,26 @@ export const PatchAvailability = async (userAvailabilityId, newResponse) => {
     },
     body: JSON.stringify(newResponse),
   };
-  const response = await fetch(`http://localhost:8088/availability/${userAvailabilityId}`, options)
+  const response = await fetch(`http://troupe-db.glitch.me/availability/${userAvailabilityId}`, options)
   await response.json()
 }
 
 export const FetchEventResponses = async (eventId) => {
     const response = await fetch(
-      `http://localhost:8088/events?id=${eventId}&_expand=eventType&_sort=startDateTime&_embed=availability&_embed=eventCast`
+      `http://troupe-db.glitch.me/events?id=${eventId}&_expand=eventType&_sort=startDateTime&_embed=availability&_embed=eventCast`
     );
     const eventResponses = await response.json();
     return eventResponses
 }
 
 export const FetchTroupeUsers = async (troupeId) => {
-  const response = await fetch(`http://localhost:8088/userTroupes?troupeId=${troupeId}&_expand=user`)
+  const response = await fetch(`http://troupe-db.glitch.me/userTroupes?troupeId=${troupeId}&_expand=user`)
   const troupeUsers = await response.json()
   return troupeUsers
 }
 
 export const FetchUsers = async () => {
-  const response = await fetch(`http://localhost:8088/users`)
+  const response = await fetch(`http://troupe-db.glitch.me/users`)
   const users = await response.json()
   return users
 }
@@ -86,13 +86,13 @@ export const AddCastMember = async (castMember) => {
     },
     body: JSON.stringify(castMember),
   };
-  const response = await fetch(`http://localhost:8088/eventCast`, options);
+  const response = await fetch(`http://troupe-db.glitch.me/eventCast`, options);
   await response.json();
 }
 
 export const GetCastedUser = async (userTroupeId, eventId) => {
   const response = await fetch(
-    `http://localhost:8088/eventCast?userTroupeId=${userTroupeId}&eventId=${eventId}`
+    `http://troupe-db.glitch.me/eventCast?userTroupeId=${userTroupeId}&eventId=${eventId}`
   );
   const availability = await response.json();
   return availability
@@ -103,19 +103,19 @@ export const DeleteCastedUser = async (eventCastId) => {
     method: "DELETE",
   };
   await fetch(
-    `http://localhost:8088/eventCast/${eventCastId}`,
+    `http://troupe-db.glitch.me/eventCast/${eventCastId}`,
     options
   );
 }
 
 export const FetchUserTypes = async () => {
-  const response = await fetch(`http://localhost:8088/userTypes`)
+  const response = await fetch(`http://troupe-db.glitch.me/userTypes`)
   const userTypes = await response.json()
   return userTypes
 }
 
 export const FetchLoggedInUser = async (userId) => {
-  const response = await fetch(`http://localhost:8088/users/${userId}`)
+  const response = await fetch(`http://troupe-db.glitch.me/users/${userId}`)
   const user = await response.json()
   return user
 }
@@ -128,7 +128,7 @@ export const UpdateUserPhoto = async (userId, photoUrl) => {
     },
     body: JSON.stringify(photoUrl),
   };
-  const response = await fetch(`http://localhost:8088/users/${userId}`, options)
+  const response = await fetch(`http://troupe-db.glitch.me/users/${userId}`, options)
   await response.json()
 }
 
@@ -140,13 +140,13 @@ export const PatchUser = async (userId, updates) => {
     },
     body: JSON.stringify(updates),
   };
-  const response = await fetch(`http://localhost:8088/users/${userId}`, options);
+  const response = await fetch(`http://troupe-db.glitch.me/users/${userId}`, options);
   await response.json();
 }
 
 export const GetUserTroupe = async (troupeId) => {
   const response = await fetch(
-    `http://localhost:8088/troupes/${troupeId}`
+    `http://troupe-db.glitch.me/troupes/${troupeId}`
   );
   const troupe = await response.json();
   return troupe
@@ -160,7 +160,7 @@ export const AddNewUser = async (newUser) => {
     },
     body: JSON.stringify(newUser),
   };
-  const user = await fetch(`http://localhost:8088/users`, options);
+  const user = await fetch(`http://troupe-db.glitch.me/users`, options);
   const newUserResponse = await user.json();
   return newUserResponse
 }
@@ -173,7 +173,7 @@ export const AddUserTroupe = async (newUserTroupe) => {
     },
     body: JSON.stringify(newUserTroupe),
   };
-  const userTroupe = await fetch(`http://localhost:8088/userTroupes`, options);
+  const userTroupe = await fetch(`http://troupe-db.glitch.me/userTroupes`, options);
   await userTroupe.json();
 }
 

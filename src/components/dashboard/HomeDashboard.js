@@ -149,7 +149,7 @@ export const HomeDashboard = () => {
         },
         body: JSON.stringify(newEvent),
       };
-      const response = await fetch(`http://localhost:8088/events`, options);
+      const response = await fetch(`http://troupe-db.glitch.me/events`, options);
       await response.json();
       FetchEventsWithUserResponse()
       setOpenNewEvent(false);
@@ -180,7 +180,7 @@ export const HomeDashboard = () => {
         body: JSON.stringify(updatedEvent),
       };
       const response = await fetch(
-        `http://localhost:8088/events/${editEventId}`,
+        `http://troupe-db.glitch.me/events/${editEventId}`,
         options
       );
       await response.json();
@@ -599,7 +599,7 @@ export const HomeDashboard = () => {
                                 method: "DELETE",
                               };
                               await fetch(
-                                `http://localhost:8088/events/${deleteEventId}`,
+                                `http://troupe-db.glitch.me/events/${deleteEventId}`,
                                 options
                               );
                               FetchEventsWithUserResponse()
