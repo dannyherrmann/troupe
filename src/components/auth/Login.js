@@ -20,7 +20,7 @@ export const Login = () => {
 
   useEffect(() => {
     const fetchTroupes = async () => {
-        const response = await fetch('http://localhost:8088/troupes')
+        const response = await fetch('http://troupe-db.glitch.me/troupes')
         const troupesArray = await response.json()
         setTroupes(troupesArray)
     }
@@ -42,7 +42,7 @@ const updateLogin = (evt) => {
 };
 
   const handleTroupeLogin = async (uid) => {
-    const response = await fetch(`http://localhost:8088/users?_embed=userTroupes&uid=${uid}`)
+    const response = await fetch(`http://troupe-db.glitch.me/users?_embed=userTroupes&uid=${uid}`)
     const user = await response.json()
     console.log(user)
     if (user.length === 1) {

@@ -19,7 +19,7 @@ export const TroupeSelector = () => {
 
     useEffect(() => {
         const fetchTroupes = async () => {
-            const response = await fetch('http://localhost:8088/troupes')
+            const response = await fetch('http://troupe-db.glitch.me/troupes')
             const troupesArray = await response.json()
             const userTroupesArray = []
             for (const troupe of troupesArray) {
